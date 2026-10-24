@@ -1,0 +1,1823 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5"/>
+  <meta name="theme-color" content="#00f2fe"/>
+  <title>RouteSphere Telecom - Wholesale Voice &amp; Carrier Telecommunications</title>
+  <meta name="description" content="Tier-1 Wholesale Voice Termination, Carrier-Grade SIP Trunking, Direct CLI Routes, and Automated Telecom Routing Infrastructure."/>
+  <meta name="application-name" content="RouteSphere"/>
+  <meta name="author" content="RouteSphere Telecom"/>
+  <meta name="keywords" content="Wholesale VoIP,SIP Trunking,CLI Voice Routes,VoIP Termination,Carrier Peering,Least Cost Routing,LCR Softswitch,A-Z Rate Sheet"/>
+  <meta property="og:title" content="RouteSphere Telecom"/>
+  <meta property="og:description" content="Tier-1 Wholesale Voice Termination, Carrier-Grade SIP Trunking, Direct CLI Routes, and Automated Telecom Routing Infrastructure."/>
+  <meta property="og:url" content="https://routesphere.com"/>
+  <meta property="og:site_name" content="RouteSphere Telecom"/>
+  <meta property="og:type" content="website"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            telecom: {
+              300: '#67e8f9',
+              400: '#22d3ee',
+              500: '#06b6d4',
+              950: '#0a1628',
+            },
+            voip: {
+              bg: '#070b14',
+              surface: '#0a0f1d',
+              card: '#0d1527',
+              border: '#1e293b',
+              blue: '#0284c7',
+            }
+          },
+          fontFamily: {
+            mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+          animation: {
+            'gradient-x': 'gradientX 4s ease infinite',
+            'bounce-slow': 'bounceSlow 3s ease-in-out infinite',
+            'float-delayed': 'floatDelayed 4s ease-in-out infinite 1.2s',
+          },
+          keyframes: {
+            gradientX: {
+              '0%, 100%': { backgroundPosition: '0% 50%' },
+              '50%': { backgroundPosition: '100% 50%' },
+            },
+            bounceSlow: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-6px)' },
+            },
+            floatDelayed: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-8px)' },
+            },
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', system-ui, sans-serif; background: #070b14; color: #f1f5f9; overflow-x: hidden; }
+    .font-mono { font-family: 'JetBrains Mono', monospace !important; }
+    .custom-scrollbar::-webkit-scrollbar { height: 5px; width: 5px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: #0d1527; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #06b6d4; }
+    .hero-canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; opacity: 0.65; }
+    .nav-dropdown { display: none; position: absolute; top: calc(100% + 10px); left: 0; min-width: 250px; background: #0d1527; border: 1px solid #1e293b; border-radius: 14px; padding: 10px; z-index: 100; backdrop-filter: blur(20px); box-shadow: 0 20px 45px rgba(0,0,0,0.6); }
+    .nav-dropdown.open { display: block; }
+    .modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(3, 7, 18, 0.85); backdrop-filter: blur(10px); z-index: 1000; align-items: center; justify-content: center; padding: 16px; }
+    .modal-backdrop.active { display: flex; }
+    .section-badge {
+      display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px;
+      border-radius: 9999px; font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      background: rgba(6,182,212,0.1); color: #22d3ee;
+      border: 1px solid rgba(6,182,212,0.25); margin-bottom: 14px;
+    }
+    .btn-gradient {
+      display: inline-flex; align-items: center; justify-content: center;
+      font-weight: 600; border-radius: 10px; transition: all 0.25s ease;
+      background: linear-gradient(135deg, #06b6d4 0%, #0284c7 100%);
+      color: #020617; box-shadow: 0 4px 20px rgba(6,182,212,0.28);
+    }
+    .btn-gradient:hover {
+      background: linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(6,182,212,0.38);
+    }
+    .feature-card {
+      padding: 24px; border-radius: 16px; background: rgba(13,21,39,0.92);
+      border: 1px solid #1e293b; transition: all 0.3s ease;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.35);
+    }
+    .feature-card:hover {
+      border-color: rgba(6,182,212,0.45);
+      transform: translateY(-5px);
+      box-shadow: 0 16px 36px -10px rgba(0,245,255,0.16);
+    }
+    .header-scrolled {
+      background: rgba(7,11,20,0.94) !important;
+      border-color: rgba(30,41,59,0.85) !important;
+      backdrop-filter: blur(18px);
+    }
+  </style>
+</head>
+<body class="bg-[#070b14] text-gray-100 antialiased overflow-x-hidden">
+
+<div class="flex flex-col min-h-screen pb-16 lg:pb-0">
+
+  <!-- ============================================================ HEADER ============================================================ -->
+  <header id="site-header" class="sticky top-0 z-40 w-full transition-all duration-300 bg-transparent border-b border-transparent shadow-none">
+    <div id="header-glow" class="h-[1px] w-full bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent transition-opacity duration-300 opacity-0"></div>
+    <div class="mx-auto flex h-16 sm:h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+      
+      <!-- Brand Logo -->
+      <a class="flex items-center gap-2.5 sm:gap-3.5 group cursor-pointer" href="#">
+        <div class="relative inline-flex items-center justify-center flex-shrink-0 overflow-hidden rounded-xl group-hover:scale-105 transition-transform duration-300 sm:w-12 sm:h-12 w-[38px] h-[38px]">
+          <svg viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+            <rect width="76" height="76" rx="16" fill="#0d1527"/>
+            <circle cx="38" cy="38" r="30" stroke="#06b6d4" stroke-width="2" opacity="0.35"/>
+            <circle cx="38" cy="38" r="22" stroke="#06b6d4" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.5"/>
+            <circle cx="38" cy="38" r="6" fill="#06b6d4" opacity="0.9"/>
+            <ellipse cx="38" cy="38" rx="30" ry="12" stroke="#22d3ee" stroke-width="1.5" opacity="0.6"/>
+            <ellipse cx="38" cy="38" rx="12" ry="30" stroke="#38bdf8" stroke-width="1.5" opacity="0.5"/>
+            <text x="32" y="44" font-family="'JetBrains Mono', monospace" font-weight="900" font-size="18" fill="#ffffff">R</text>
+          </svg>
+        </div>
+        <div class="flex flex-col justify-center leading-none">
+          <div class="flex items-center tracking-tight">
+            <span class="font-extrabold tracking-tight text-white text-xl sm:text-2xl font-mono">Route</span>
+            <span class="font-extrabold tracking-tight text-cyan-400 text-xl sm:text-2xl font-mono">SPHERE</span>
+          </div>
+          <span class="text-[9px] sm:text-[10px] uppercase font-bold tracking-widest text-slate-400 mt-0.5 sm:mt-1 truncate max-w-[170px] sm:max-w-none">Wholesale VoIP &amp; Solutions</span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation -->
+      <nav class="hidden lg:flex items-center gap-1 bg-slate-900/60 p-1.5 rounded-xl border border-slate-800/80 backdrop-blur-md">
+        <a class="px-3.5 py-1.5 text-sm font-medium transition-colors rounded-lg hover:text-white hover:bg-slate-800/80 text-cyan-400 font-semibold bg-slate-800/50" href="#">Home</a>
+        <div class="relative" id="services-nav-group">
+          <button onclick="toggleDropdown()" class="flex items-center gap-1.5 px-3.5 py-1.5 text-sm font-medium transition-colors rounded-lg hover:text-white hover:bg-slate-800/80 text-slate-300">
+            Services
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-slate-400"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+          <div id="services-dropdown" class="nav-dropdown">
+            <a href="#services-detail" onclick="closeDropdown()" class="block px-3 py-2 text-xs rounded-lg hover:bg-slate-800/90 hover:text-cyan-400 transition-colors">
+              <div class="font-bold text-white text-sm">Wholesale Voice</div>
+              <div class="text-slate-400 text-[11px] mt-0.5">Direct CLI &amp; NCLI Voice Termination</div>
+            </a>
+            <a href="#services-detail" onclick="closeDropdown()" class="block px-3 py-2 text-xs rounded-lg hover:bg-slate-800/90 hover:text-cyan-400 transition-colors">
+              <div class="font-bold text-white text-sm">SIP Trunking</div>
+              <div class="text-slate-400 text-[11px] mt-0.5">High-Capacity SBC Channels &amp; DIDs</div>
+            </a>
+            <a href="#coverage" onclick="closeDropdown()" class="block px-3 py-2 text-xs rounded-lg hover:bg-slate-800/90 hover:text-cyan-400 transition-colors">
+              <div class="font-bold text-white text-sm">International Routes</div>
+              <div class="text-slate-400 text-[11px] mt-0.5">Direct Tier-1 PTT Peering</div>
+            </a>
+            <a href="#b2b" onclick="closeDropdown()" class="block px-3 py-2 text-xs rounded-lg hover:bg-slate-800/90 hover:text-cyan-400 transition-colors">
+              <div class="font-bold text-white text-sm">Carrier Peering</div>
+              <div class="text-slate-400 text-[11px] mt-0.5">Bilateral Voice Traffic Swaps</div>
+            </a>
+            <a href="#quality" onclick="closeDropdown()" class="block px-3 py-2 text-xs rounded-lg hover:bg-slate-800/90 hover:text-cyan-400 transition-colors">
+              <div class="font-bold text-white text-sm">Route Quality Testing</div>
+              <div class="text-slate-400 text-[11px] mt-0.5">Automated FAS &amp; MOS Probe Engine</div>
+            </a>
+          </div>
+        </div>
+        <a class="px-3.5 py-1.5 text-sm font-medium transition-colors rounded-lg hover:text-white hover:bg-slate-800/80 text-slate-300" href="#coverage">Coverage</a>
+        <a class="px-3.5 py-1.5 text-sm font-medium transition-colors rounded-lg hover:text-white hover:bg-slate-800/80 text-slate-300" href="#rates">Rates</a>
+        <a class="px-3.5 py-1.5 text-sm font-medium transition-colors rounded-lg hover:text-white hover:bg-slate-800/80 text-slate-300" href="#team">About</a>
+        <a class="px-3.5 py-1.5 text-sm font-medium transition-colors rounded-lg hover:text-white hover:bg-slate-800/80 text-slate-300" href="#faq">FAQ</a>
+      </nav>
+
+      <!-- Desktop Header Actions -->
+      <div class="hidden lg:flex items-center gap-3">
+        <button onclick="openLoginModal()" class="text-xs font-mono font-semibold text-slate-300 hover:text-cyan-400 px-3.5 py-2 rounded-lg border border-slate-800 hover:border-cyan-500/30 transition-colors flex items-center gap-1.5 bg-slate-900/40">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-400"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+          Login
+        </button>
+        <button onclick="openQuoteModal()" class="btn-gradient px-3 py-1.5 text-xs">Request a Quote</button>
+      </div>
+
+      <!-- Mobile Top Actions -->
+      <div class="flex lg:hidden items-center gap-2">
+        <button onclick="openQuoteModal()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 font-bold text-xs font-mono shadow-md shadow-cyan-500/20">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>
+          <span>Quote</span>
+        </button>
+        <button onclick="toggleMobileMenu()" class="p-2 rounded-lg border border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800 transition-colors" aria-label="Toggle Menu">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Mobile Dropdown Menu -->
+    <div id="mobile-menu" class="hidden lg:hidden border-t border-slate-800 bg-[#0a0f1d]/95 backdrop-blur-2xl">
+      <div class="px-4 py-4 space-y-1.5">
+        <a href="#" onclick="toggleMobileMenu()" class="block px-3 py-2 text-sm font-semibold text-cyan-400 rounded-lg bg-slate-800/50">Home</a>
+        <a href="#services-detail" onclick="toggleMobileMenu()" class="block px-3 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">Services</a>
+        <a href="#coverage" onclick="toggleMobileMenu()" class="block px-3 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">Coverage</a>
+        <a href="#rates" onclick="toggleMobileMenu()" class="block px-3 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">Rates</a>
+        <a href="#team" onclick="toggleMobileMenu()" class="block px-3 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">About Team</a>
+        <a href="#faq" onclick="toggleMobileMenu()" class="block px-3 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">FAQ</a>
+        <div class="pt-3 border-t border-slate-800 flex gap-2">
+          <button onclick="toggleMobileMenu(); openLoginModal()" class="flex-1 text-center text-xs font-mono font-semibold text-slate-300 px-3 py-2 rounded-lg border border-slate-800 hover:border-cyan-500/30 transition-colors bg-slate-900/40">Portal Login</button>
+          <button onclick="toggleMobileMenu(); openQuoteModal()" class="flex-1 text-center btn-gradient text-xs py-2">Get Quote</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================================ HERO ============================================================ -->
+  <main class="flex-grow">
+    <div class="relative overflow-hidden bg-[#070b14] -mt-16 sm:-mt-20 pt-24 sm:pt-32 pb-14 sm:pb-16 md:pt-40 md:pb-24">
+      <canvas id="hero-canvas" class="hero-canvas"></canvas>
+      <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-cyan-500/10 rounded-full blur-[160px] pointer-events-none"></div>
+      <div class="absolute top-1/3 right-10 w-[400px] h-[350px] bg-purple-600/10 rounded-full blur-[140px] pointer-events-none"></div>
+      
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          
+          <!-- Hero Text -->
+          <div class="lg:col-span-7 space-y-5 sm:space-y-6 text-center lg:text-left">
+            <div class="inline-flex items-center gap-2 px-3 sm:px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-[11px] sm:text-xs font-semibold uppercase tracking-wider backdrop-blur-md shadow-[0_0_15px_rgba(0,245,255,0.15)]">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400 animate-pulse flex-shrink-0"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>
+              <span class="truncate">Carrier-Grade International Voice Peering</span>
+            </div>
+
+            <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.1]">
+              Global Voice Connectivity<br class="hidden sm:inline"/>
+              <span class="bg-gradient-to-r from-cyan-400 via-purple-400 to-sky-300 bg-clip-text text-transparent animate-gradient-x" style="background-size:200% auto;">Built for Wholesale</span>
+            </h1>
+
+            <p class="text-sm sm:text-base lg:text-lg text-slate-300 max-w-2xl mx-auto lg:mx-0 font-normal leading-relaxed">
+              Accelerate your wholesale traffic with direct international voice termination, competitive rate sheets, redundant SIP connectivity, bilateral carrier interconnection, automated route quality monitoring, and enterprise voice traffic management.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 sm:gap-4 pt-2">
+              <button onclick="openQuoteModal()" class="btn-gradient px-6 py-3.5 text-sm sm:text-base w-full sm:w-auto">
+                Request Wholesale Rates
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="ml-2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </button>
+              <a href="#rates" class="inline-flex items-center justify-center font-semibold rounded-lg transition-all duration-200 border border-slate-700 hover:border-cyan-400 text-cyan-400 hover:bg-cyan-500/10 px-6 py-3.5 text-sm sm:text-base w-full sm:w-auto">
+                Explore Our Routes
+              </a>
+            </div>
+
+            <!-- Animated Live Metrics -->
+            <div class="pt-6 sm:pt-8 grid grid-cols-3 gap-2 sm:gap-4 border-t border-slate-800/80 font-mono">
+              <div class="min-w-0">
+                <div class="text-xl sm:text-2xl md:text-3xl font-extrabold truncate text-white"><span id="metric-volume">450</span>M+</div>
+                <div class="text-[10px] sm:text-xs text-slate-400 uppercase tracking-wider font-semibold mt-0.5 font-sans truncate">Monthly Voice Volume</div>
+              </div>
+              <div class="min-w-0">
+                <div class="text-xl sm:text-2xl md:text-3xl font-extrabold truncate text-cyan-400"><span id="metric-uptime">99.999</span>%</div>
+                <div class="text-[10px] sm:text-xs text-slate-400 uppercase tracking-wider font-semibold mt-0.5 font-sans truncate">Network SLA Uptime</div>
+              </div>
+              <div class="min-w-0">
+                <div class="text-xl sm:text-2xl md:text-3xl font-extrabold truncate text-emerald-400"><span id="metric-bilateral">180</span>+</div>
+                <div class="text-[10px] sm:text-xs text-slate-400 uppercase tracking-wider font-semibold mt-0.5 font-sans truncate">Tier-1 Bilaterals</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hero SBC Console (Interactive Live Node Status) -->
+          <div class="lg:col-span-5 relative mt-4 lg:mt-0">
+            <!-- Floating Anti-FAS Pill -->
+            <div class="absolute -top-4 -right-4 z-20 hidden sm:flex items-center gap-2.5 px-4 py-2 rounded-xl bg-[#0d1527]/80 border border-cyan-500/40 backdrop-blur-xl shadow-xl animate-bounce-slow">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-emerald-400"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+              <div class="text-xs font-mono">
+                <span class="text-white font-bold block">Anti-FAS Engine</span>
+                <span class="text-emerald-400 text-[10px]">100% Active Shield</span>
+              </div>
+            </div>
+
+            <!-- Floating Latency Pill -->
+            <div class="absolute -bottom-4 -left-4 z-20 hidden sm:flex items-center gap-2.5 px-4 py-2 rounded-xl bg-[#0d1527]/80 border border-purple-500/40 backdrop-blur-xl shadow-xl animate-float-delayed">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-purple-400"><path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/><path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"/><path d="M19.1 4.9C23 8.8 23 15.1 19.1 19"/></svg>
+              <div class="text-xs font-mono">
+                <span class="text-white font-bold block">Latency Core</span>
+                <span class="text-purple-300 text-[10px]">&lt; 15ms Regional</span>
+              </div>
+            </div>
+
+            <div class="relative rounded-2xl border border-slate-800 bg-[#0d1527]/90 p-4 sm:p-6 shadow-2xl backdrop-blur-2xl">
+              <div class="flex items-center justify-between border-b border-slate-800 pb-3 sm:pb-4 mb-3 sm:mb-4">
+                <div class="flex items-center gap-1.5 sm:gap-2 min-w-0">
+                  <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-rose-500"></div>
+                  <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-amber-500"></div>
+                  <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-emerald-500"></div>
+                  <span class="ml-1 sm:ml-2 text-[11px] sm:text-xs font-mono text-slate-400 truncate">SBC-SNC-NODE-01</span>
+                </div>
+                <!-- Animated live equalizer -->
+                <div class="flex items-center gap-1 h-5">
+                  <span class="w-1 bg-gradient-to-t from-cyan-500 to-purple-500 rounded-full animate-pulse" style="height:35%;animation-delay:0.0s;animation-duration:1.2s"></span>
+                  <span class="w-1 bg-gradient-to-t from-cyan-500 to-purple-500 rounded-full animate-pulse" style="height:85%;animation-delay:0.15s;animation-duration:1.2s"></span>
+                  <span class="w-1 bg-gradient-to-t from-cyan-500 to-purple-500 rounded-full animate-pulse" style="height:100%;animation-delay:0.3s;animation-duration:1.2s"></span>
+                  <span class="w-1 bg-gradient-to-t from-cyan-500 to-purple-500 rounded-full animate-pulse" style="height:70%;animation-delay:0.45s;animation-duration:1.2s"></span>
+                  <span class="w-1 bg-gradient-to-t from-cyan-500 to-purple-500 rounded-full animate-pulse" style="height:30%;animation-delay:0.6s;animation-duration:1.2s"></span>
+                  <span class="w-1 bg-gradient-to-t from-cyan-500 to-purple-500 rounded-full animate-pulse" style="height:90%;animation-delay:0.75s;animation-duration:1.2s"></span>
+                  <span class="w-1 bg-gradient-to-t from-cyan-500 to-purple-500 rounded-full animate-pulse" style="height:50%;animation-delay:0.9s;animation-duration:1.2s"></span>
+                </div>
+              </div>
+
+              <!-- Gateway Nodes -->
+              <div class="space-y-2.5 sm:space-y-3 font-mono text-xs">
+                <div class="flex items-center justify-between p-2.5 sm:p-3 rounded-lg bg-[#11192e] border border-slate-800 hover:border-cyan-500/30 transition-colors gap-2">
+                  <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400 flex-shrink-0"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/></svg>
+                    <div class="min-w-0">
+                      <div class="font-bold text-slate-200 text-xs sm:text-sm truncate">Frankfurt (FRA1)</div>
+                      <div class="text-[9px] sm:text-[10px] text-slate-400 truncate">194.168.10.12</div>
+                    </div>
+                  </div>
+                  <div class="text-right flex-shrink-0">
+                    <div class="text-emerald-400 font-bold text-xs sm:text-sm">8ms</div>
+                    <div class="text-[9px] sm:text-[10px] text-slate-400">ONLINE</div>
+                  </div>
+                </div>
+
+                <div class="flex items-center justify-between p-2.5 sm:p-3 rounded-lg bg-[#11192e] border border-slate-800 hover:border-cyan-500/30 transition-colors gap-2">
+                  <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400 flex-shrink-0"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/></svg>
+                    <div class="min-w-0">
+                      <div class="font-bold text-slate-200 text-xs sm:text-sm truncate">New York (NY4)</div>
+                      <div class="text-[9px] sm:text-[10px] text-slate-400 truncate">208.76.120.45</div>
+                    </div>
+                  </div>
+                  <div class="text-right flex-shrink-0">
+                    <div class="text-emerald-400 font-bold text-xs sm:text-sm">14ms</div>
+                    <div class="text-[9px] sm:text-[10px] text-slate-400">ONLINE</div>
+                  </div>
+                </div>
+
+                <div class="flex items-center justify-between p-2.5 sm:p-3 rounded-lg bg-[#11192e] border border-slate-800 hover:border-cyan-500/30 transition-colors gap-2">
+                  <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400 flex-shrink-0"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/></svg>
+                    <div class="min-w-0">
+                      <div class="font-bold text-slate-200 text-xs sm:text-sm truncate">Singapore (SG1)</div>
+                      <div class="text-[9px] sm:text-[10px] text-slate-400 truncate">103.28.40.88</div>
+                    </div>
+                  </div>
+                  <div class="text-right flex-shrink-0">
+                    <div class="text-emerald-400 font-bold text-xs sm:text-sm">22ms</div>
+                    <div class="text-[9px] sm:text-[10px] text-slate-400">ONLINE</div>
+                  </div>
+                </div>
+
+                <div class="flex items-center justify-between p-2.5 sm:p-3 rounded-lg bg-[#11192e] border border-slate-800 hover:border-cyan-500/30 transition-colors gap-2">
+                  <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400 flex-shrink-0"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/></svg>
+                    <div class="min-w-0">
+                      <div class="font-bold text-slate-200 text-xs sm:text-sm truncate">London (LD4)</div>
+                      <div class="text-[9px] sm:text-[10px] text-slate-400 truncate">185.92.220.10</div>
+                    </div>
+                  </div>
+                  <div class="text-right flex-shrink-0">
+                    <div class="text-emerald-400 font-bold text-xs sm:text-sm">11ms</div>
+                    <div class="text-[9px] sm:text-[10px] text-slate-400">ONLINE</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-4 sm:mt-5 pt-3 sm:pt-4 border-t border-slate-800 flex items-center justify-between text-[11px] sm:text-xs font-mono gap-2">
+                <span class="text-slate-400 truncate">Interconnect: <strong class="text-white">Equinix FRA1 / NY4</strong></span>
+                <span class="text-cyan-400 font-bold flex-shrink-0">ASR: 58.4%</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Trust Bar -->
+      <div class="mt-12 sm:mt-16 border-y border-slate-800/80 bg-[#090f1d]/90 backdrop-blur-md py-5 sm:py-6">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 sm:gap-6 text-center">
+            <div class="flex flex-col items-center justify-center space-y-1">
+              <div class="text-xs sm:text-sm font-bold text-white tracking-wide font-mono flex items-center gap-1.5">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                <span>Global Voice</span>
+              </div>
+              <div class="text-[11px] sm:text-xs text-slate-400">195+ Countries</div>
+            </div>
+            <div class="flex flex-col items-center justify-center space-y-1">
+              <div class="text-xs sm:text-sm font-bold text-white tracking-wide font-mono flex items-center gap-1.5">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                <span>Carrier Connectivity</span>
+              </div>
+              <div class="text-[11px] sm:text-xs text-slate-400">Tier-1 Bilaterals</div>
+            </div>
+            <div class="flex flex-col items-center justify-center space-y-1">
+              <div class="text-xs sm:text-sm font-bold text-white tracking-wide font-mono flex items-center gap-1.5">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                <span>Route Quality</span>
+              </div>
+              <div class="text-[11px] sm:text-xs text-slate-400">Zero FAS Guarantee</div>
+            </div>
+            <div class="flex flex-col items-center justify-center space-y-1">
+              <div class="text-xs sm:text-sm font-bold text-white tracking-wide font-mono flex items-center gap-1.5">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                <span>Competitive Rates</span>
+              </div>
+              <div class="text-[11px] sm:text-xs text-slate-400">Dynamic LCR</div>
+            </div>
+            <div class="flex flex-col items-center justify-center space-y-1 col-span-2 sm:col-span-1">
+              <div class="text-xs sm:text-sm font-bold text-white tracking-wide font-mono flex items-center gap-1.5">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                <span>24/7 Support</span>
+              </div>
+              <div class="text-[11px] sm:text-xs text-slate-400">NOC Engineering</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================ CARRIER ADVANTAGES ============================================================ -->
+    <section id="services-detail" class="py-24 bg-[#070b14] border-t border-slate-800/80 relative overflow-hidden">
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-cyan-500/5 rounded-full blur-[140px] pointer-events-none"></div>
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
+        <div class="flex flex-col mb-12 text-center items-center mx-auto max-w-3xl">
+          <span class="section-badge">Carrier Advantages</span>
+          <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-white mb-4">Engineered for Wholesale Excellence</h2>
+          <p class="text-base md:text-lg text-gray-400 leading-relaxed">Built from the ground up to provide voice operators, resellers, and call centers with reliable international termination.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="feature-card group">
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 group-hover:border-cyan-500/40 flex items-center justify-center transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+              </div>
+              <span class="text-[10px] font-mono font-bold text-slate-400 bg-slate-900/80 px-2 py-0.5 rounded border border-slate-800 group-hover:text-cyan-300 transition-colors">195+ Countries</span>
+            </div>
+            <h3 class="text-base font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors">Global Coverage</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">Direct PTT interconnects and local termination coverage spanning 195+ countries worldwide.</p>
+          </div>
+
+          <div class="feature-card group">
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 group-hover:border-cyan-500/40 flex items-center justify-center transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-emerald-400"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              </div>
+              <span class="text-[10px] font-mono font-bold text-slate-400 bg-slate-900/80 px-2 py-0.5 rounded border border-slate-800 group-hover:text-cyan-300 transition-colors">Dynamic LCR</span>
+            </div>
+            <h3 class="text-base font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors">Competitive Wholesale Rates</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">Dynamic Least Cost Routing (LCR) pricing profiles optimized for volume voice operators.</p>
+          </div>
+
+          <div class="feature-card group">
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 group-hover:border-cyan-500/40 flex items-center justify-center transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-purple-400"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/></svg>
+              </div>
+              <span class="text-[10px] font-mono font-bold text-slate-400 bg-slate-900/80 px-2 py-0.5 rounded border border-slate-800 group-hover:text-cyan-300 transition-colors">Zero FAS</span>
+            </div>
+            <h3 class="text-base font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors">Route Quality Monitoring</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">Automated FAS anomaly flags, PESQ MOS audio scoring, and sub-second PDD tracking.</p>
+          </div>
+
+          <div class="feature-card group">
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 group-hover:border-cyan-500/40 flex items-center justify-center transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg>
+              </div>
+              <span class="text-[10px] font-mono font-bold text-slate-400 bg-slate-900/80 px-2 py-0.5 rounded border border-slate-800 group-hover:text-cyan-300 transition-colors">Bilateral</span>
+            </div>
+            <h3 class="text-base font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors">Carrier Interconnection</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">Direct bilateral peering cross-connects in Equinix Frankfurt, New York, and Singapore.</p>
+          </div>
+
+          <div class="feature-card group">
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 group-hover:border-cyan-500/40 flex items-center justify-center transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-amber-400"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
+              </div>
+              <span class="text-[10px] font-mono font-bold text-slate-400 bg-slate-900/80 px-2 py-0.5 rounded border border-slate-800 group-hover:text-cyan-300 transition-colors">1/1 Increment</span>
+            </div>
+            <h3 class="text-base font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors">Transparent Billing</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">Itemized real-time CDR logs with 1/1 second billing increments and automated reconciliation.</p>
+          </div>
+
+          <div class="feature-card group">
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 group-hover:border-cyan-500/40 flex items-center justify-center transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-purple-400"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg>
+              </div>
+              <span class="text-[10px] font-mono font-bold text-slate-400 bg-slate-900/80 px-2 py-0.5 rounded border border-slate-800 group-hover:text-cyan-300 transition-colors">CLI &amp; NCLI</span>
+            </div>
+            <h3 class="text-base font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors">Flexible Routing</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">Custom routing policies (Direct CLI, Standard CLI, NCLI Premium) tailored to your traffic profile.</p>
+          </div>
+
+          <div class="feature-card group">
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 group-hover:border-cyan-500/40 flex items-center justify-center transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/></svg>
+              </div>
+              <span class="text-[10px] font-mono font-bold text-slate-400 bg-slate-900/80 px-2 py-0.5 rounded border border-slate-800 group-hover:text-cyan-300 transition-colors">Elastic CPS</span>
+            </div>
+            <h3 class="text-base font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors">SIP Connectivity</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">Redundant SBC media gateways supporting high-CPS capacity, static IP, and Digest authentication.</p>
+          </div>
+
+          <div class="feature-card group">
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 group-hover:border-cyan-500/40 flex items-center justify-center transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-emerald-400"><path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"/></svg>
+              </div>
+              <span class="text-[10px] font-mono font-bold text-slate-400 bg-slate-900/80 px-2 py-0.5 rounded border border-slate-800 group-hover:text-cyan-300 transition-colors">24/7 NOC</span>
+            </div>
+            <h3 class="text-base font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors">Dedicated Support</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">24/7 technical Network Operations Center (NOC) engineers for immediate route management.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ INTERACTIVE TOPOLOGY ============================================================ -->
+    <section id="topology" class="py-16 sm:py-24 bg-[#070b14] border-t border-slate-800/80 relative overflow-hidden">
+      <div class="absolute top-1/2 left-1/3 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-cyan-500/10 rounded-full blur-[160px] pointer-events-none"></div>
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
+        <div class="flex flex-col mb-12 text-center items-center mx-auto max-w-3xl">
+          <span class="section-badge">Global Voice Matrix</span>
+          <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-white mb-4">Interactive Carrier Route Topology</h2>
+          <p class="text-base md:text-lg text-gray-400 leading-relaxed">Click any Point of Presence (PoP) to inspect real-time SIP signaling telemetry, average latency, and direct PTT termination pathways.</p>
+        </div>
+
+        <!-- Mobile PoP Pills -->
+        <div class="lg:hidden flex items-center gap-1.5 overflow-x-auto pb-3 mb-4 custom-scrollbar -mx-4 px-4">
+          <button onclick="selectPoP('fra1')" id="m-btn-fra1" class="px-3 py-1.5 rounded-lg text-xs font-mono font-bold whitespace-nowrap transition-all border flex-shrink-0 bg-cyan-500 text-slate-950 border-cyan-400 shadow-md shadow-cyan-500/20">Frankfurt</button>
+          <button onclick="selectPoP('ld4')" id="m-btn-ld4" class="px-3 py-1.5 rounded-lg text-xs font-mono font-bold whitespace-nowrap transition-all border flex-shrink-0 bg-[#0d1527] border-slate-800 text-slate-300 hover:text-white">London</button>
+          <button onclick="selectPoP('ny4')" id="m-btn-ny4" class="px-3 py-1.5 rounded-lg text-xs font-mono font-bold whitespace-nowrap transition-all border flex-shrink-0 bg-[#0d1527] border-slate-800 text-slate-300 hover:text-white">New York</button>
+          <button onclick="selectPoP('sg1')" id="m-btn-sg1" class="px-3 py-1.5 rounded-lg text-xs font-mono font-bold whitespace-nowrap transition-all border flex-shrink-0 bg-[#0d1527] border-slate-800 text-slate-300 hover:text-white">Singapore</button>
+          <button onclick="selectPoP('ty2')" id="m-btn-ty2" class="px-3 py-1.5 rounded-lg text-xs font-mono font-bold whitespace-nowrap transition-all border flex-shrink-0 bg-[#0d1527] border-slate-800 text-slate-300 hover:text-white">Tokyo</button>
+          <button onclick="selectPoP('dxb')" id="m-btn-dxb" class="px-3 py-1.5 rounded-lg text-xs font-mono font-bold whitespace-nowrap transition-all border flex-shrink-0 bg-[#0d1527] border-slate-800 text-slate-300 hover:text-white">Dubai</button>
+          <button onclick="selectPoP('sp1')" id="m-btn-sp1" class="px-3 py-1.5 rounded-lg text-xs font-mono font-bold whitespace-nowrap transition-all border flex-shrink-0 bg-[#0d1527] border-slate-800 text-slate-300 hover:text-white">São Paulo</button>
+          <button onclick="selectPoP('jnb')" id="m-btn-jnb" class="px-3 py-1.5 rounded-lg text-xs font-mono font-bold whitespace-nowrap transition-all border flex-shrink-0 bg-[#0d1527] border-slate-800 text-slate-300 hover:text-white">Johannesburg</button>
+          <button onclick="selectPoP('syd')" id="m-btn-syd" class="px-3 py-1.5 rounded-lg text-xs font-mono font-bold whitespace-nowrap transition-all border flex-shrink-0 bg-[#0d1527] border-slate-800 text-slate-300 hover:text-white">Sydney</button>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
+          <!-- Vector Map Panel -->
+          <div class="lg:col-span-8">
+            <div class="relative aspect-[4/3] sm:aspect-[16/9] w-full rounded-2xl border border-slate-800/80 bg-[#0B0F19]/90 backdrop-blur-xl p-2 sm:p-4 overflow-hidden shadow-2xl">
+              <!-- World Grid Pattern -->
+              <svg class="absolute inset-0 w-full h-full opacity-25" viewBox="0 0 1000 500" fill="none">
+                <defs><pattern id="world-grid" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#38BDF8" opacity="0.3"/></pattern></defs>
+                <rect width="1000" height="500" fill="url(#world-grid)"/>
+              </svg>
+              <!-- Global Carrier Interconnect Lines -->
+              <svg class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="routeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#00F5FF" stop-opacity="0.8"/>
+                    <stop offset="50%" stop-color="#7928CA" stop-opacity="0.9"/>
+                    <stop offset="100%" stop-color="#38BDF8" stop-opacity="0.8"/>
+                  </linearGradient>
+                </defs>
+                <path d="M 28 36 Q 39.5 26 51 32" fill="none" stroke="url(#routeGradient)" stroke-width="0.5" stroke-dasharray="1.5,1" class="animate-pulse"/>
+                <path d="M 47 28 Q 49 22 51 32" fill="none" stroke="url(#routeGradient)" stroke-width="0.5" stroke-dasharray="1.5,1" class="animate-pulse"/>
+                <path d="M 51 32 Q 57 30 63 44" fill="none" stroke="url(#routeGradient)" stroke-width="0.5" stroke-dasharray="1.5,1" class="animate-pulse"/>
+                <path d="M 63 44 Q 70.5 43 78 58" fill="none" stroke="url(#routeGradient)" stroke-width="0.5" stroke-dasharray="1.5,1" class="animate-pulse"/>
+                <path d="M 78 58 Q 82 40 86 38" fill="none" stroke="url(#routeGradient)" stroke-width="0.5" stroke-dasharray="1.5,1" class="animate-pulse"/>
+                <path d="M 78 58 Q 84 60 90 78" fill="none" stroke="url(#routeGradient)" stroke-width="0.5" stroke-dasharray="1.5,1" class="animate-pulse"/>
+                <path d="M 28 36 Q 32 46 36 72" fill="none" stroke="url(#routeGradient)" stroke-width="0.5" stroke-dasharray="1.5,1" class="animate-pulse"/>
+                <path d="M 51 32 Q 53 46 55 76" fill="none" stroke="url(#routeGradient)" stroke-width="0.5" stroke-dasharray="1.5,1" class="animate-pulse"/>
+              </svg>
+
+              <!-- Node Pins -->
+              <div id="nodes-container"></div>
+            </div>
+          </div>
+
+          <!-- Active Gateway Details Console -->
+          <div class="lg:col-span-4">
+            <div id="pop-panel" class="rounded-2xl border border-cyan-500/30 bg-[#0d1527]/95 p-5 sm:p-6 shadow-2xl backdrop-blur-xl relative overflow-hidden">
+              <div class="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl pointer-events-none"></div>
+              <div class="flex items-center justify-between border-b border-slate-800 pb-3 sm:pb-4 mb-3 sm:mb-4">
+                <div class="min-w-0">
+                  <div class="text-[10px] sm:text-xs font-mono uppercase tracking-wider text-cyan-400 font-bold truncate">Active Session Border Controller</div>
+                  <h3 id="pop-name" class="text-lg sm:text-xl font-extrabold text-white mt-0.5 sm:mt-1 truncate">Frankfurt (FRA1)</h3>
+                </div>
+                <span class="inline-flex items-center gap-1 text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/20 flex-shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="animate-pulse"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                  LIVE
+                </span>
+              </div>
+              <div class="space-y-2.5 sm:space-y-3 font-mono text-xs">
+                <div class="flex justify-between py-1.5 sm:py-2 border-b border-slate-800/60">
+                  <span class="text-slate-400">Region Zone:</span>
+                  <span id="pop-region" class="text-slate-200 font-bold">Europe Core</span>
+                </div>
+                <div class="flex justify-between py-1.5 sm:py-2 border-b border-slate-800/60">
+                  <span class="text-slate-400">Average ASR:</span>
+                  <span id="pop-asr" class="text-cyan-400 font-bold text-sm">59.4%</span>
+                </div>
+                <div class="flex justify-between py-1.5 sm:py-2 border-b border-slate-800/60">
+                  <span class="text-slate-400">Post-Dial Delay (PDD):</span>
+                  <span id="pop-pdd" class="text-slate-200 font-bold">0.8s</span>
+                </div>
+                <div class="flex justify-between py-1.5 sm:py-2 border-b border-slate-800/60">
+                  <span class="text-slate-400">Interconnect Latency:</span>
+                  <span id="pop-latency" class="text-emerald-400 font-bold">6ms</span>
+                </div>
+                <div class="flex justify-between py-1.5 sm:py-2">
+                  <span class="text-slate-400">Protocol Binding:</span>
+                  <span class="text-slate-300 text-[11px]">SIP v2.0 / TLS 1.3 / SRTP</span>
+                </div>
+              </div>
+              <div class="mt-5 sm:mt-6 pt-3 sm:pt-4 border-t border-slate-800">
+                <button onclick="openQuoteModal()" class="w-full inline-flex items-center justify-center gap-2 py-2.5 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 font-bold text-xs hover:from-cyan-400 hover:to-blue-500 transition-all shadow-lg shadow-cyan-500/20">
+                  Connect to <span id="pop-button-label">Frankfurt</span> Gateway
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ INFRASTRUCTURE FLOW ============================================================ -->
+    <section class="py-16 sm:py-20 bg-[#0a0f1d] border-t border-slate-800 relative overflow-hidden">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col mb-12 text-center items-center mx-auto max-w-3xl">
+          <span class="section-badge">Telecom Architecture</span>
+          <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-white mb-4">Wholesale Voice Infrastructure Flow</h2>
+          <p class="text-base md:text-lg text-gray-400 leading-relaxed">End-to-end voice traffic delivery model connecting upstream carrier supply to downstream customer billing.</p>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3 sm:gap-4 items-stretch">
+          <div class="p-3.5 sm:p-4 rounded-xl bg-[#111827] border border-slate-800 text-center flex flex-col items-center justify-between space-y-2 hover:border-cyan-500/40 transition-colors">
+            <div class="w-full flex items-center justify-between text-[10px] font-mono text-slate-500"><span>STEP</span><span class="text-cyan-400 font-bold">01</span></div>
+            <div class="w-10 h-10 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center my-1"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400"><rect width="20" height="8" x="2" y="2" rx="2"/><rect width="20" height="8" x="2" y="14" rx="2"/><line x1="6" x2="6.01" y1="6" y2="6"/><line x1="6" x2="6.01" y1="18" y2="18"/></svg></div>
+            <div><div class="text-xs sm:text-sm font-bold text-white font-mono">Carrier</div><div class="text-[9px] sm:text-[10px] text-slate-400 uppercase tracking-wider mt-0.5">Tier-1 Bilateral</div></div>
+          </div>
+          <div class="p-3.5 sm:p-4 rounded-xl bg-[#111827] border border-slate-800 text-center flex flex-col items-center justify-between space-y-2 hover:border-cyan-500/40 transition-colors">
+            <div class="w-full flex items-center justify-between text-[10px] font-mono text-slate-500"><span>STEP</span><span class="text-cyan-400 font-bold">02</span></div>
+            <div class="w-10 h-10 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center my-1"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg></div>
+            <div><div class="text-xs sm:text-sm font-bold text-white font-mono">Route</div><div class="text-[9px] sm:text-[10px] text-slate-400 uppercase tracking-wider mt-0.5">Direct PTT Path</div></div>
+          </div>
+          <div class="p-3.5 sm:p-4 rounded-xl bg-[#111827] border border-slate-800 text-center flex flex-col items-center justify-between space-y-2 hover:border-cyan-500/40 transition-colors">
+            <div class="w-full flex items-center justify-between text-[10px] font-mono text-slate-500"><span>STEP</span><span class="text-cyan-400 font-bold">03</span></div>
+            <div class="w-10 h-10 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center my-1"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400"><rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/></svg></div>
+            <div><div class="text-xs sm:text-sm font-bold text-white font-mono">Routing</div><div class="text-[9px] sm:text-[10px] text-slate-400 uppercase tracking-wider mt-0.5">Dynamic LCR</div></div>
+          </div>
+          <div class="p-3.5 sm:p-4 rounded-xl bg-[#111827] border border-slate-800 text-center flex flex-col items-center justify-between space-y-2 hover:border-cyan-500/40 transition-colors">
+            <div class="w-full flex items-center justify-between text-[10px] font-mono text-slate-500"><span>STEP</span><span class="text-cyan-400 font-bold">04</span></div>
+            <div class="w-10 h-10 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center my-1"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+            <div><div class="text-xs sm:text-sm font-bold text-white font-mono">Customer</div><div class="text-[9px] sm:text-[10px] text-slate-400 uppercase tracking-wider mt-0.5">SIP Account</div></div>
+          </div>
+          <div class="p-3.5 sm:p-4 rounded-xl bg-[#111827] border border-slate-800 text-center flex flex-col items-center justify-between space-y-2 hover:border-cyan-500/40 transition-colors">
+            <div class="w-full flex items-center justify-between text-[10px] font-mono text-slate-500"><span>STEP</span><span class="text-cyan-400 font-bold">05</span></div>
+            <div class="w-10 h-10 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center my-1"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
+            <div><div class="text-xs sm:text-sm font-bold text-white font-mono">Voice Traffic</div><div class="text-[9px] sm:text-[10px] text-slate-400 uppercase tracking-wider mt-0.5">High CPS Stream</div></div>
+          </div>
+          <div class="p-3.5 sm:p-4 rounded-xl bg-[#111827] border border-slate-800 text-center flex flex-col items-center justify-between space-y-2 hover:border-cyan-500/40 transition-colors">
+            <div class="w-full flex items-center justify-between text-[10px] font-mono text-slate-500"><span>STEP</span><span class="text-cyan-400 font-bold">06</span></div>
+            <div class="w-10 h-10 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center my-1"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/></svg></div>
+            <div><div class="text-xs sm:text-sm font-bold text-white font-mono">Monitoring</div><div class="text-[9px] sm:text-[10px] text-slate-400 uppercase tracking-wider mt-0.5">Anti-FAS Engine</div></div>
+          </div>
+          <div class="p-3.5 sm:p-4 rounded-xl bg-[#111827] border border-slate-800 text-center flex flex-col items-center justify-between space-y-2 hover:border-cyan-500/40 transition-colors col-span-2 sm:col-span-1">
+            <div class="w-full flex items-center justify-between text-[10px] font-mono text-slate-500"><span>STEP</span><span class="text-cyan-400 font-bold">07</span></div>
+            <div class="w-10 h-10 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center my-1"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg></div>
+            <div><div class="text-xs sm:text-sm font-bold text-white font-mono">CDR / Billing</div><div class="text-[9px] sm:text-[10px] text-slate-400 uppercase tracking-wider mt-0.5">Real-Time 1/1s</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ QUALITY & FAS PROBE ============================================================ -->
+    <section id="quality" class="py-20 bg-[#0a0f1d]/60 border-t border-slate-800 relative overflow-hidden">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col mb-12 text-center items-center mx-auto max-w-3xl">
+          <span class="section-badge">Automated FAS &amp; Quality Engine</span>
+          <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-white mb-4">Zero False Answer Supervision &amp; Pure CLI Guarantee</h2>
+          <p class="text-base md:text-lg text-gray-400 leading-relaxed">Test route metrics in real-time. Our automated probe engine verifies DTMF, MOS scores, and caller ID transparency before routing client traffic.</p>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          
+          <!-- Interactive Route Probe Simulator -->
+          <div class="lg:col-span-5">
+            <div class="rounded-2xl border border-slate-800 bg-[#0d1527] p-6 shadow-xl">
+              <h3 class="text-xl font-bold text-white mb-2 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/></svg>
+                Interactive Route Probe
+              </h3>
+              <p class="text-xs text-gray-400 mb-6">Simulate a real-time IVR probe call to measure ASR, PDD, and MOS audio quality.</p>
+              <div class="space-y-4">
+                <div>
+                  <label class="text-xs font-semibold uppercase tracking-wider text-slate-300 font-mono block mb-1.5">Target Destination / Prefix</label>
+                  <input id="probe-prefix" type="text" class="flex h-11 w-full rounded-xl border border-slate-800 bg-slate-900/90 px-3.5 py-2 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all hover:border-slate-700" value="+44 (UK Mobile)"/>
+                </div>
+                <button id="probe-btn" onclick="runProbeSimulation()" class="btn-gradient w-full py-2.5 text-sm flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mr-2"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+                  Run Route Quality Test
+                </button>
+                <div id="probe-telemetry" class="hidden mt-3 p-4 rounded-xl bg-slate-900 border border-slate-800 font-mono text-xs space-y-2">
+                  <div class="flex justify-between"><span class="text-slate-400">Target Route:</span><span class="text-white font-bold" id="res-target">+44 (UK Mobile)</span></div>
+                  <div class="flex justify-between"><span class="text-slate-400">ASR (Answer-Seizure Ratio):</span><span class="text-cyan-400 font-bold" id="res-asr">61.4%</span></div>
+                  <div class="flex justify-between"><span class="text-slate-400">Post-Dial Delay (PDD):</span><span class="text-emerald-400 font-bold" id="res-pdd">0.82s</span></div>
+                  <div class="flex justify-between"><span class="text-slate-400">MOS Quality Score:</span><span class="text-purple-400 font-bold" id="res-mos">4.38 (P.800 HD)</span></div>
+                  <div class="flex justify-between"><span class="text-slate-400">FAS Spectral Check:</span><span class="text-emerald-400 font-bold" id="res-fas">0% (PASSED)</span></div>
+                  <div class="flex justify-between"><span class="text-slate-400">CLI Transparency:</span><span class="text-emerald-400 font-bold" id="res-cli">100% Guaranteed</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quality Cards -->
+          <div class="lg:col-span-7 space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="p-5 rounded-xl bg-[#0d1527] border border-slate-800">
+                <div class="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center mb-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+                </div>
+                <h4 class="text-base font-bold text-white mb-1">Anti-FAS Engine</h4>
+                <p class="text-xs text-gray-400 leading-relaxed">Real-time spectral speech analysis isolates early media anomalies, fake ringback tones, and immediate bill charging.</p>
+              </div>
+
+              <div class="p-5 rounded-xl bg-[#0d1527] border border-slate-800">
+                <div class="w-10 h-10 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center mb-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/></svg>
+                </div>
+                <h4 class="text-base font-bold text-white mb-1">Sub-Second PDD</h4>
+                <p class="text-xs text-gray-400 leading-relaxed">Direct SIP trunking ensures Post-Dial Delay stays below 1.2s across all European and North American tier-1 routes.</p>
+              </div>
+            </div>
+
+            <div class="p-6 rounded-xl bg-gradient-to-r from-[#0a1628] to-[#0d1527] border border-cyan-500/30">
+              <div class="flex items-start gap-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-amber-400 flex-shrink-0 mt-1"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+                <div>
+                  <h4 class="text-base font-bold text-white mb-1">Automatic Route Rerouting (LCR)</h4>
+                  <p class="text-xs text-gray-300 leading-relaxed">If any route ASR drops below 40% or experiences latency spikes, our softswitch dynamically reroutes call traffic within milliseconds to secondary PTT interconnects.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ COVERAGE REGIONS ============================================================ -->
+    <section id="coverage" class="py-20 bg-[#070b14] border-t border-slate-800 relative overflow-hidden">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col mb-12 text-center items-center mx-auto max-w-3xl">
+          <span class="section-badge">Global Voice Network</span>
+          <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-white mb-4">International Coverage &amp; Interconnect Regions</h2>
+          <p class="text-base md:text-lg text-gray-400 leading-relaxed">High-capacity media gateway footprint spanning major telecommunication hubs across 7 world regions.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="p-5 rounded-xl bg-[#0d1527] border border-slate-800 hover:border-cyan-500/40 transition-colors flex flex-col justify-between space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-bold text-white flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+                North America
+              </span>
+              <span class="text-[10px] font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">Tier-1 Direct</span>
+            </div>
+            <div class="space-y-1 font-mono text-xs text-slate-400 pt-2 border-t border-slate-800">
+              <div class="flex justify-between"><span>SBC Nodes:</span><span class="text-slate-200 font-bold">Equinix NY4, Chicago</span></div>
+              <div class="flex justify-between"><span>Avg Latency:</span><span class="text-cyan-400 font-bold">&lt; 14ms</span></div>
+            </div>
+          </div>
+
+          <div class="p-5 rounded-xl bg-[#0d1527] border border-slate-800 hover:border-cyan-500/40 transition-colors flex flex-col justify-between space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-bold text-white flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+                Europe
+              </span>
+              <span class="text-[10px] font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">Tier-1 Direct</span>
+            </div>
+            <div class="space-y-1 font-mono text-xs text-slate-400 pt-2 border-t border-slate-800">
+              <div class="flex justify-between"><span>SBC Nodes:</span><span class="text-slate-200 font-bold">Equinix FRA1, LD4, AMS</span></div>
+              <div class="flex justify-between"><span>Avg Latency:</span><span class="text-cyan-400 font-bold">&lt; 8ms</span></div>
+            </div>
+          </div>
+
+          <div class="p-5 rounded-xl bg-[#0d1527] border border-slate-800 hover:border-cyan-500/40 transition-colors flex flex-col justify-between space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-bold text-white flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+                Asia-Pacific
+              </span>
+              <span class="text-[10px] font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">Tier-1 Direct</span>
+            </div>
+            <div class="space-y-1 font-mono text-xs text-slate-400 pt-2 border-t border-slate-800">
+              <div class="flex justify-between"><span>SBC Nodes:</span><span class="text-slate-200 font-bold">Equinix SG1, Tokyo, HK</span></div>
+              <div class="flex justify-between"><span>Avg Latency:</span><span class="text-cyan-400 font-bold">&lt; 22ms</span></div>
+            </div>
+          </div>
+
+          <div class="p-5 rounded-xl bg-[#0d1527] border border-slate-800 hover:border-cyan-500/40 transition-colors flex flex-col justify-between space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-bold text-white flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+                Middle East
+              </span>
+              <span class="text-[10px] font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">Direct PTT</span>
+            </div>
+            <div class="space-y-1 font-mono text-xs text-slate-400 pt-2 border-t border-slate-800">
+              <div class="flex justify-between"><span>SBC Nodes:</span><span class="text-slate-200 font-bold">Dubai IX, Riyadh</span></div>
+              <div class="flex justify-between"><span>Avg Latency:</span><span class="text-cyan-400 font-bold">&lt; 35ms</span></div>
+            </div>
+          </div>
+
+          <div class="p-5 rounded-xl bg-[#0d1527] border border-slate-800 hover:border-cyan-500/40 transition-colors flex flex-col justify-between space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-bold text-white flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+                South America
+              </span>
+              <span class="text-[10px] font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">CLI Direct</span>
+            </div>
+            <div class="space-y-1 font-mono text-xs text-slate-400 pt-2 border-t border-slate-800">
+              <div class="flex justify-between"><span>SBC Nodes:</span><span class="text-slate-200 font-bold">São Paulo, Buenos Aires</span></div>
+              <div class="flex justify-between"><span>Avg Latency:</span><span class="text-cyan-400 font-bold">&lt; 42ms</span></div>
+            </div>
+          </div>
+
+          <div class="p-5 rounded-xl bg-[#0d1527] border border-slate-800 hover:border-cyan-500/40 transition-colors flex flex-col justify-between space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-bold text-white flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+                Africa
+              </span>
+              <span class="text-[10px] font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">NCLI Premium</span>
+            </div>
+            <div class="space-y-1 font-mono text-xs text-slate-400 pt-2 border-t border-slate-800">
+              <div class="flex justify-between"><span>SBC Nodes:</span><span class="text-slate-200 font-bold">Johannesburg, Lagos, Cairo</span></div>
+              <div class="flex justify-between"><span>Avg Latency:</span><span class="text-cyan-400 font-bold">&lt; 55ms</span></div>
+            </div>
+          </div>
+
+          <div class="p-5 rounded-xl bg-[#0d1527] border border-slate-800 hover:border-cyan-500/40 transition-colors flex flex-col justify-between space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-bold text-white flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+                Oceania
+              </span>
+              <span class="text-[10px] font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">CLI Direct</span>
+            </div>
+            <div class="space-y-1 font-mono text-xs text-slate-400 pt-2 border-t border-slate-800">
+              <div class="flex justify-between"><span>SBC Nodes:</span><span class="text-slate-200 font-bold">Sydney, Auckland</span></div>
+              <div class="flex justify-between"><span>Avg Latency:</span><span class="text-cyan-400 font-bold">&lt; 40ms</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ RATE DESK MATRIX ============================================================ -->
+    <section id="rates" class="py-16 sm:py-20 bg-[#0a0f1d] border-t border-slate-800">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col mb-12 text-center items-center mx-auto max-w-3xl">
+          <span class="section-badge">Carrier Rate Desk</span>
+          <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-white mb-4">Rate Intelligence Matrix</h2>
+          <p class="text-base md:text-lg text-gray-400 leading-relaxed">Sample wholesale rate card displaying carrier buy rates, customer sell rates, CLI delivery, and quality tiers.</p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 mb-6">
+          <div class="w-full sm:w-80">
+            <div class="relative flex items-center">
+              <div class="absolute left-3.5 flex items-center pointer-events-none text-slate-400">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              </div>
+              <input id="rates-filter-input" type="text" onkeyup="handleRateSearch()" class="flex h-11 w-full rounded-xl border border-slate-800 bg-slate-900/90 pl-10 px-3.5 py-2 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all hover:border-slate-700 font-sans" placeholder="Search destination prefix..."/>
+            </div>
+          </div>
+          <button onclick="downloadRatesCSV()" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-bold font-mono transition-colors shadow-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+            <span class="truncate">Download Full A-Z CSV Rate Sheet</span>
+          </button>
+        </div>
+
+        <div class="w-full overflow-x-auto rounded-xl border border-slate-800 bg-[#0d1527] shadow-2xl custom-scrollbar">
+          <table class="w-full text-left text-xs font-mono min-w-[640px]">
+            <thead class="bg-[#111827] text-slate-400 uppercase tracking-wider font-semibold border-b border-slate-800">
+              <tr>
+                <th class="px-4 py-3.5">Destination</th>
+                <th class="px-4 py-3.5">Country Code</th>
+                <th class="px-4 py-3.5">Prefix</th>
+                <th class="px-4 py-3.5 text-emerald-400">Buy Rate / Min</th>
+                <th class="px-4 py-3.5 text-cyan-400">Sell Rate / Min</th>
+                <th class="px-4 py-3.5">CLI Guarantee</th>
+                <th class="px-4 py-3.5">Quality Tier</th>
+                <th class="px-4 py-3.5">Route Type</th>
+              </tr>
+            </thead>
+            <tbody id="rate-table-rows" class="divide-y divide-slate-800 text-slate-200">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ INTERCONNECT PROCESS ============================================================ -->
+    <section class="py-20 bg-[#070b14] border-t border-slate-800">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col mb-12 text-center items-center mx-auto max-w-3xl">
+          <span class="section-badge">Interconnect Process</span>
+          <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-white mb-4">How Wholesale Interconnection Works</h2>
+          <p class="text-base md:text-lg text-gray-400 leading-relaxed">A 6-step carrier onboarding pipeline designed for voice operators, resellers, and enterprise PBXs.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="p-6 rounded-xl bg-[#0d1527] border border-slate-800 hover:border-cyan-500/40 transition-colors flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <div class="w-10 h-10 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/></svg>
+                </div>
+                <span class="text-xl font-black font-mono text-cyan-400">01</span>
+              </div>
+              <h3 class="text-base font-bold text-white mb-2">Connect</h3>
+              <p class="text-xs text-slate-400 leading-relaxed">Authenticate your softswitch IP address or SIP credentials on our SBC gateways.</p>
+            </div>
+          </div>
+
+          <div class="p-6 rounded-xl bg-[#0d1527] border border-slate-800 hover:border-cyan-500/40 transition-colors flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <div class="w-10 h-10 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M8 13h2"/><path d="M14 13h2"/><path d="M8 17h2"/><path d="M14 17h2"/></svg>
+                </div>
+                <span class="text-xl font-black font-mono text-cyan-400">02</span>
+              </div>
+              <h3 class="text-base font-bold text-white mb-2">Select Routes</h3>
+              <p class="text-xs text-slate-400 leading-relaxed">Choose target destinations and quality tiers (CLI, NCLI, Direct PTT) from our rate desk.</p>
+            </div>
+          </div>
+
+          <div class="p-6 rounded-xl bg-[#0d1527] border border-slate-800 hover:border-cyan-500/40 transition-colors flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <div class="w-10 h-10 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/></svg>
+                </div>
+                <span class="text-xl font-black font-mono text-cyan-400">03</span>
+              </div>
+              <h3 class="text-base font-bold text-white mb-2">Test</h3>
+              <p class="text-xs text-slate-400 leading-relaxed">Run automated IVR probe tests to verify ASR, PDD, DTMF, and PESQ MOS audio quality.</p>
+            </div>
+          </div>
+
+          <div class="p-6 rounded-xl bg-[#0d1527] border border-slate-800 hover:border-cyan-500/40 transition-colors flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <div class="w-10 h-10 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400"><line x1="4" x2="4" y1="21" y2="14"/><line x1="4" x2="4" y1="10" y2="3"/><line x1="12" x2="12" y1="21" y2="12"/><line x1="12" x2="12" y1="8" y2="3"/><line x1="20" x2="20" y1="21" y2="16"/><line x1="20" x2="20" y1="12" y2="3"/><line x1="2" x2="6" y1="14" y2="14"/><line x1="10" x2="14" y1="8" y2="8"/><line x1="18" x2="22" y1="16" y2="16"/></svg>
+                </div>
+                <span class="text-xl font-black font-mono text-cyan-400">04</span>
+              </div>
+              <h3 class="text-base font-bold text-white mb-2">Configure</h3>
+              <p class="text-xs text-slate-400 leading-relaxed">Set up tech prefixes, maximum CPS capacity, and dynamic failover routing profiles.</p>
+            </div>
+          </div>
+
+          <div class="p-6 rounded-xl bg-[#0d1527] border border-slate-800 hover:border-cyan-500/40 transition-colors flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <div class="w-10 h-10 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+                </div>
+                <span class="text-xl font-black font-mono text-cyan-400">05</span>
+              </div>
+              <h3 class="text-base font-bold text-white mb-2">Go Live</h3>
+              <p class="text-xs text-slate-400 leading-relaxed">Initiate live voice traffic with sub-second setup times and redundant SBC failover.</p>
+            </div>
+          </div>
+
+          <div class="p-6 rounded-xl bg-[#0d1527] border border-slate-800 hover:border-cyan-500/40 transition-colors flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <div class="w-10 h-10 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+                </div>
+                <span class="text-xl font-black font-mono text-cyan-400">06</span>
+              </div>
+              <h3 class="text-base font-bold text-white mb-2">Monitor</h3>
+              <p class="text-xs text-slate-400 leading-relaxed">Track real-time call CDRs, minute volume, ASR trends, and itemized billing statements.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ B2B SOLUTIONS (CUSTOMERS & SUPPLIERS) ============================================================ -->
+    <section id="b2b" class="py-16 sm:py-20 bg-[#0a0f1d] border-t border-slate-800">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col mb-12 text-center items-center mx-auto max-w-3xl">
+          <span class="section-badge">B2B Telecom Solutions</span>
+          <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-white mb-4">Tailored for Customers &amp; Carrier Suppliers</h2>
+          <p class="text-base md:text-lg text-gray-400 leading-relaxed">Whether you require direct voice termination or seek a bilateral traffic exchange partner, RouteSphere provides dedicated infrastructure.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+          <!-- Card For Customers -->
+          <div class="p-5 sm:p-8 rounded-2xl bg-[#0d1527] border border-slate-800 flex flex-col justify-between space-y-6">
+            <div>
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center flex-shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </div>
+                <div>
+                  <h3 class="text-lg sm:text-xl font-bold text-white">For Wholesale Customers</h3>
+                  <span class="text-xs text-slate-400 block">Call Centers, VoIP Resellers &amp; Enterprise PBX Operators</span>
+                </div>
+              </div>
+              <div class="space-y-2.5 sm:space-y-3 pt-4 border-t border-slate-800">
+                <div class="flex items-start gap-2.5 text-xs text-slate-300">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400 flex-shrink-0 mt-0.5"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                  <span>Competitive A-Z wholesale rates &amp; custom tariffs</span>
+                </div>
+                <div class="flex items-start gap-2.5 text-xs text-slate-300">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400 flex-shrink-0 mt-0.5"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                  <span>Flexible Least Cost Routing (LCR) profiles</span>
+                </div>
+                <div class="flex items-start gap-2.5 text-xs text-slate-300">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400 flex-shrink-0 mt-0.5"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                  <span>High-capacity elastic SIP connectivity &amp; DIDs</span>
+                </div>
+                <div class="flex items-start gap-2.5 text-xs text-slate-300">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400 flex-shrink-0 mt-0.5"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                  <span>Transparent 1/1s itemized billing &amp; instant topups</span>
+                </div>
+                <div class="flex items-start gap-2.5 text-xs text-slate-300">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400 flex-shrink-0 mt-0.5"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                  <span>Real-time Call Detail Records (CDRs) &amp; export</span>
+                </div>
+                <div class="flex items-start gap-2.5 text-xs text-slate-300">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400 flex-shrink-0 mt-0.5"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                  <span>24/7 automated FAS &amp; MOS route quality monitoring</span>
+                </div>
+              </div>
+            </div>
+            <div class="pt-4 sm:pt-6 border-t border-slate-800">
+              <button onclick="openQuoteModal()" class="btn-gradient w-full py-2.5 text-sm">Get Wholesale Rates</button>
+            </div>
+          </div>
+
+          <!-- Card For Carriers & Suppliers -->
+          <div class="p-5 sm:p-8 rounded-2xl bg-[#0d1527] border border-slate-800 flex flex-col justify-between space-y-6">
+            <div>
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m11 17 2 2a1 1 0 1 0 3-3"/><path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4"/><path d="m21 3 1 11h-2"/><path d="M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3"/><path d="M3 4h8"/></svg>
+                </div>
+                <div>
+                  <h3 class="text-lg sm:text-xl font-bold text-white">For Carriers &amp; Suppliers</h3>
+                  <span class="text-xs text-slate-400 block">Tier-1 PTTs, MNOs &amp; Interconnect Operators</span>
+                </div>
+              </div>
+              <div class="space-y-2.5 sm:space-y-3 pt-4 border-t border-slate-800">
+                <div class="flex items-start gap-2.5 text-xs text-slate-300">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-emerald-400 flex-shrink-0 mt-0.5"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                  <span>Direct bilateral IP peering &amp; TDM cross-connects</span>
+                </div>
+                <div class="flex items-start gap-2.5 text-xs text-slate-300">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-emerald-400 flex-shrink-0 mt-0.5"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                  <span>High-volume voice traffic exchange agreements</span>
+                </div>
+                <div class="flex items-start gap-2.5 text-xs text-slate-300">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-emerald-400 flex-shrink-0 mt-0.5"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                  <span>Global route distribution to wholesale buyers</span>
+                </div>
+                <div class="flex items-start gap-2.5 text-xs text-slate-300">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-emerald-400 flex-shrink-0 mt-0.5"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                  <span>Predictable long-term traffic commitments</span>
+                </div>
+                <div class="flex items-start gap-2.5 text-xs text-slate-300">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-emerald-400 flex-shrink-0 mt-0.5"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                  <span>Structured bi-weekly / monthly Net-7 settlements</span>
+                </div>
+                <div class="flex items-start gap-2.5 text-xs text-slate-300">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-emerald-400 flex-shrink-0 mt-0.5"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                  <span>Seamless technical integration in Equinix FRA1/NY4/SG1</span>
+                </div>
+              </div>
+            </div>
+            <div class="pt-4 sm:pt-6 border-t border-slate-800">
+              <button onclick="openPartnerModal()" class="inline-flex items-center justify-center font-semibold rounded-lg transition-all duration-200 border border-telecom-500/50 text-telecom-400 hover:bg-telecom-500/10 px-4 py-2.5 text-sm w-full">Apply for Bilateral Peering</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ OPERATIONAL LEADERSHIP TEAM ============================================================ -->
+    <section id="team" class="py-20 bg-[#070b14] border-t border-slate-800/80 relative overflow-hidden">
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-cyan-500/5 rounded-full blur-[160px] pointer-events-none"></div>
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10 space-y-10">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div class="max-w-2xl space-y-3">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-semibold uppercase tracking-wider">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              <span>Operational Leadership</span>
+            </div>
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Meet the Team Behind RouteSphere</h2>
+            <p class="text-sm sm:text-base text-slate-300 leading-relaxed">Built by a focused team of technology, telecom, and business professionals working together to deliver reliable global voice connectivity.</p>
+          </div>
+          <a class="inline-flex items-center gap-2 text-sm font-semibold text-cyan-400 hover:text-cyan-300 transition-colors pb-1" href="#contact">
+            Contact our leadership team
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+        </div>
+
+        <div class="flex justify-center items-center">
+          <!-- Member: H B (Founder and CEO) -->
+          <div class="group relative flex flex-col justify-between rounded-2xl bg-[#0d1527]/80 p-7 sm:p-8 border border-slate-800/90 backdrop-blur-md transition-all duration-300 hover:border-cyan-500/50 hover:bg-[#111c34] hover:shadow-[0_10px_35px_-10px_rgba(6,182,212,0.2)] hover:-translate-y-1 max-w-md w-full">
+            <div class="absolute top-0 right-0 w-28 h-28 bg-cyan-500/5 rounded-full blur-2xl pointer-events-none group-hover:bg-cyan-500/10 transition-colors"></div>
+            <div>
+              <div class="relative mb-6 flex items-center justify-between">
+                <div class="relative">
+                  <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-slate-800 to-[#162238] border border-slate-700/80 group-hover:border-cyan-400/60 flex items-center justify-center font-bold font-mono text-2xl text-cyan-300 shadow-inner group-hover:shadow-[0_0_20px_rgba(6,182,212,0.3)] transition-all">HB</div>
+                  <div class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-[#070b14] flex items-center justify-center"><span class="w-3.5 h-3.5 rounded-full bg-cyan-400 animate-pulse"></span></div>
+                </div>
+                <div class="text-right">
+                  <span class="inline-block px-3 py-1 rounded-md bg-slate-800/80 border border-slate-700/50 text-[11px] font-mono font-medium text-slate-400 uppercase tracking-wider">Leadership</span>
+                </div>
+              </div>
+              <div class="space-y-1.5">
+                <h3 class="text-xl sm:text-2xl font-bold text-white group-hover:text-cyan-300 transition-colors flex items-center gap-2">H B</h3>
+                <div class="text-sm sm:text-base font-semibold text-cyan-400/90 leading-tight">Founder &amp; CEO</div>
+                <div class="text-xs font-mono text-slate-400 uppercase tracking-wider pt-0.5">Executive &amp; Strategic Growth</div>
+              </div>
+              <p class="mt-4 text-xs sm:text-sm text-slate-300 leading-relaxed">Leads overall business strategy, international carrier relations, and enterprise vision for global wholesale voice expansion.</p>
+            </div>
+            <div class="mt-6 pt-5 border-t border-slate-800/80 flex items-center justify-between text-slate-400">
+              <span class="text-xs font-mono text-slate-400 flex items-center gap-1.5">
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg> Executive Core
+              </span>
+              <div class="flex items-center gap-2.5">
+                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="p-2 rounded-lg bg-slate-800/60 hover:bg-cyan-500/20 hover:text-cyan-300 transition-colors" aria-label="H B LinkedIn Profile">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+                </a>
+                <a href="mailto:routespheretelecom@gmail.com" class="p-2 rounded-lg bg-slate-800/60 hover:bg-cyan-500/20 hover:text-cyan-300 transition-colors" aria-label="Email H B">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ FAQ ACCORDION ============================================================ -->
+    <section id="faq" class="py-20 bg-[#070b14] border-t border-slate-800">
+      <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col mb-12 text-center items-center mx-auto max-w-3xl">
+          <span class="section-badge">Telecom Knowledge Base</span>
+          <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-white mb-4">Frequently Asked Questions</h2>
+          <p class="text-base md:text-lg text-gray-400 leading-relaxed">Everything you need to know about our wholesale voice routes, SBC gateways, and carrier SLAs.</p>
+        </div>
+
+        <div class="space-y-4" id="faq-list">
+          <!-- FAQ item 1 (default open) -->
+          <div class="rounded-xl bg-[#0d1527] border border-slate-800 overflow-hidden transition-colors">
+            <button onclick="toggleFaq(1)" class="w-full p-5 text-left flex items-center justify-between font-bold text-white text-sm hover:text-cyan-400 transition-colors">
+              <span>What codecs are supported on your SBC gateways?</span>
+              <svg id="faq-icon-1" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400 transition-transform duration-200 rotate-180"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div id="faq-ans-1" class="px-5 pb-5 text-xs text-slate-300 leading-relaxed border-t border-slate-800/50 pt-3">
+              We support G.711u (PCMU), G.711a (PCMA), G.729a, G.722 HD voice, and OPUS for high-fidelity audio transmission.
+            </div>
+          </div>
+
+          <!-- FAQ item 2 -->
+          <div class="rounded-xl bg-[#0d1527] border border-slate-800 overflow-hidden transition-colors">
+            <button onclick="toggleFaq(2)" class="w-full p-5 text-left flex items-center justify-between font-bold text-white text-sm hover:text-cyan-400 transition-colors">
+              <span>How is IP authentication vs Digest authentication handled?</span>
+              <svg id="faq-icon-2" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-slate-400 transition-transform duration-200"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div id="faq-ans-2" class="hidden px-5 pb-5 text-xs text-slate-300 leading-relaxed border-t border-slate-800/50 pt-3">
+              We support both static IP authentication for softswitch-to-softswitch trunking and Digest (SIP username/password) authentication for client IP-PBX deployments.
+            </div>
+          </div>
+
+          <!-- FAQ item 3 -->
+          <div class="rounded-xl bg-[#0d1527] border border-slate-800 overflow-hidden transition-colors">
+            <button onclick="toggleFaq(3)" class="w-full p-5 text-left flex items-center justify-between font-bold text-white text-sm hover:text-cyan-400 transition-colors">
+              <span>What are your billing increments?</span>
+              <svg id="faq-icon-3" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-slate-400 transition-transform duration-200"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div id="faq-ans-3" class="hidden px-5 pb-5 text-xs text-slate-300 leading-relaxed border-t border-slate-800/50 pt-3">
+              Depending on destination and agreement terms, we support 1/1 (per second), 6/6, and 60/60 billing increments.
+            </div>
+          </div>
+
+          <!-- FAQ item 4 -->
+          <div class="rounded-xl bg-[#0d1527] border border-slate-800 overflow-hidden transition-colors">
+            <button onclick="toggleFaq(4)" class="w-full p-5 text-left flex items-center justify-between font-bold text-white text-sm hover:text-cyan-400 transition-colors">
+              <span>How does your Anti-FAS (False Answer Supervision) guarantee work?</span>
+              <svg id="faq-icon-4" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-slate-400 transition-transform duration-200"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div id="faq-ans-4" class="hidden px-5 pb-5 text-xs text-slate-300 leading-relaxed border-t border-slate-800/50 pt-3">
+              Our softswitch continuously runs automated speech-recognition probes. If early media charging or artificial answer supervision is detected on a supplier route, that route is immediately demoted in our LCR engine.
+            </div>
+          </div>
+
+          <!-- FAQ item 5 -->
+          <div class="rounded-xl bg-[#0d1527] border border-slate-800 overflow-hidden transition-colors">
+            <button onclick="toggleFaq(5)" class="w-full p-5 text-left flex items-center justify-between font-bold text-white text-sm hover:text-cyan-400 transition-colors">
+              <span>Can we integrate directly with your switch API?</span>
+              <svg id="faq-icon-5" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-slate-400 transition-transform duration-200"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div id="faq-ans-5" class="hidden px-5 pb-5 text-xs text-slate-300 leading-relaxed border-t border-slate-800/50 pt-3">
+              Yes! Our platform provides RESTful APIs for real-time CDR retrieval, account balance queries, rate sheet downloads, and SIP trunk status monitoring.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ SLA BANNER ============================================================ -->
+    <section class="py-20 bg-gradient-to-br from-[#0d0720] via-[#070b14] to-[#050915] border-t border-slate-800/80 relative overflow-hidden">
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-purple-600/10 rounded-full blur-[140px] pointer-events-none"></div>
+      <div class="absolute top-1/3 right-1/4 w-[300px] h-[300px] bg-cyan-500/8 rounded-full blur-[120px] pointer-events-none"></div>
+      
+      <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 text-center relative z-10 space-y-6">
+        <div class="flex justify-center mb-2">
+          <div class="w-16 h-16 rounded-2xl bg-[#0d1527] border border-cyan-500/30 flex items-center justify-center p-3 shadow-lg shadow-cyan-500/10">
+            <svg viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+              <circle cx="38" cy="38" r="30" stroke="#06b6d4" stroke-width="2" opacity="0.4"/>
+              <ellipse cx="38" cy="38" rx="30" ry="12" stroke="#22d3ee" stroke-width="1.5" opacity="0.6"/>
+              <text x="32" y="44" font-family="'JetBrains Mono', monospace" font-weight="900" font-size="20" fill="#ffffff">R</text>
+            </svg>
+          </div>
+        </div>
+
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300 text-xs font-semibold uppercase tracking-wider">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-purple-400"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+          SLA Guaranteed Voice Interconnect
+        </div>
+
+        <h2 class="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight">
+          <span class="text-white">Build Better Voice Routes. </span>
+          <span class="bg-gradient-to-r from-purple-400 via-violet-300 to-cyan-400 bg-clip-text text-transparent">Grow Your Wholesale Traffic.</span>
+        </h2>
+
+        <p class="text-base md:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">
+          Request a customized rate quotation or set up a test trunk in our RouteSphere SBC media gateways within 15 minutes.
+        </p>
+
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+          <button onclick="openQuoteModal()" class="btn-gradient px-6 py-3.5 text-base shadow-lg shadow-purple-500/25">
+            Request Wholesale Rates
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="ml-2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </button>
+          <a href="mailto:noc@routesphere.com" class="inline-flex items-center justify-center font-semibold rounded-lg transition-all duration-200 bg-slate-900/80 text-gray-100 hover:bg-slate-800 border border-slate-700 px-6 py-3.5 text-base">
+            Talk to Our NOC Team
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============================================================ FOOTER ============================================================ -->
+  <footer class="w-full border-t border-slate-800 bg-[#050810] text-slate-400">
+    <div class="mx-auto max-w-7xl px-4 py-12 sm:py-16 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
+        
+        <!-- Brand Info -->
+        <div class="col-span-2 space-y-4 pr-0 sm:pr-4">
+          <a class="flex items-center gap-3" href="#">
+            <div class="relative inline-flex items-center justify-center flex-shrink-0 overflow-hidden rounded-xl sm:w-10 sm:h-10 w-[36px] h-[36px]">
+              <svg viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+                <rect width="76" height="76" rx="16" fill="#0d1527"/>
+                <circle cx="38" cy="38" r="30" stroke="#06b6d4" stroke-width="2" opacity="0.35"/>
+                <ellipse cx="38" cy="38" rx="30" ry="12" stroke="#22d3ee" stroke-width="1.5" opacity="0.6"/>
+                <text x="32" y="44" font-family="'JetBrains Mono', monospace" font-weight="900" font-size="18" fill="#ffffff">R</text>
+              </svg>
+            </div>
+            <span class="text-xl font-extrabold text-white font-mono">Route<span class="text-cyan-400">SPHERE</span></span>
+          </a>
+          <p class="text-xs text-slate-400 leading-relaxed">Carrier-grade wholesale voice termination, direct PTT routes, enterprise SIP trunking, and automated LCR switch management.</p>
+          <div class="space-y-1.5 text-xs font-mono text-slate-400 pt-2">
+            <div class="flex items-center gap-2 truncate">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400 flex-shrink-0"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+              <span class="truncate">NOC 24/7: noc@routesphere.com</span>
+            </div>
+            <div class="flex items-center gap-2 truncate">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400 flex-shrink-0"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+              <span class="truncate">Frankfurt • London • New York • Singapore</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Services -->
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-white mb-3 sm:mb-4 font-mono">Services</h4>
+          <ul class="space-y-2.5 text-xs">
+            <li><a class="hover:text-cyan-400 transition-colors" href="#services-detail">Wholesale Voice</a></li>
+            <li><a class="hover:text-cyan-400 transition-colors" href="#services-detail">SIP Trunking</a></li>
+            <li><a class="hover:text-cyan-400 transition-colors" href="#coverage">International Routes</a></li>
+            <li><a class="hover:text-cyan-400 transition-colors" href="#b2b">Carrier Interconnection</a></li>
+            <li><a class="hover:text-cyan-400 transition-colors" href="#quality">Route Quality Testing</a></li>
+          </ul>
+        </div>
+
+        <!-- Solutions -->
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-white mb-3 sm:mb-4 font-mono">Solutions</h4>
+          <ul class="space-y-2.5 text-xs">
+            <li><a class="hover:text-cyan-400 transition-colors" href="#coverage">Global Coverage</a></li>
+            <li><a class="hover:text-cyan-400 transition-colors" href="#rates">Rate Desk</a></li>
+            <li><a class="hover:text-cyan-400 transition-colors" href="#quality">Anti-FAS Engine</a></li>
+            <li><button onclick="openPartnerModal()" class="hover:text-cyan-400 transition-colors text-left">Bilateral Swaps</button></li>
+            <li><a class="hover:text-cyan-400 transition-colors" href="#faq">Technical FAQ</a></li>
+          </ul>
+        </div>
+
+        <!-- Portals -->
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-white mb-3 sm:mb-4 font-mono">Portals</h4>
+          <ul class="space-y-2.5 text-xs">
+            <li><button onclick="openLoginModal()" class="hover:text-cyan-400 transition-colors text-left">Customer Portal</button></li>
+            <li><button onclick="openLoginModal()" class="hover:text-cyan-400 transition-colors text-left">Partner &amp; Admin Softswitch</button></li>
+            <li><button onclick="openLoginModal()" class="hover:text-cyan-400 transition-colors text-left">Portal Login</button></li>
+            <li><button onclick="openQuoteModal()" class="hover:text-cyan-400 transition-colors text-left">Account Onboarding</button></li>
+            <li><a class="hover:text-cyan-400 transition-colors" href="mailto:noc@routesphere.com">NOC Support Desk</a></li>
+          </ul>
+        </div>
+
+        <!-- Company -->
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-white mb-3 sm:mb-4 font-mono">Company</h4>
+          <ul class="space-y-2.5 text-xs">
+            <li><a class="hover:text-cyan-400 transition-colors" href="#team">About RouteSphere</a></li>
+            <li><button onclick="openQuoteModal()" class="hover:text-cyan-400 transition-colors text-left">Contact Telecom Sales</button></li>
+            <li><a class="hover:text-cyan-400 transition-colors" href="#faq">Privacy Policy</a></li>
+            <li><a class="hover:text-cyan-400 transition-colors" href="#faq">Terms of Service</a></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="mt-10 sm:mt-12 pt-6 sm:pt-8 border-t border-slate-800/70 flex flex-col md:flex-row items-center justify-between text-xs text-slate-500 gap-4 text-center md:text-left">
+        <p>RouteSphere Global Telecom Solutions Inc. All rights reserved.</p>
+        <div class="flex flex-wrap items-center justify-center md:justify-end gap-3 sm:gap-6 font-mono text-[11px]">
+          <span class="flex items-center gap-1.5 text-emerald-400">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse flex-shrink-0"></span>
+            SBC Gateways 100% OPERATIONAL
+          </span>
+          <span class="text-slate-400">ITU-T / FCC STIR/SHAKEN Compliant</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============================================================ MOBILE BOTTOM NAVIGATION ============================================================ -->
+  <nav class="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-[#070b14]/95 backdrop-blur-2xl border-t border-cyan-500/20 shadow-[0_-10px_30px_rgba(0,0,0,0.85)] pb-[env(safe-area-inset-bottom)]" aria-label="Mobile Navigation">
+    <div class="h-[1px] w-full bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent"></div>
+    <div class="flex items-center justify-around px-2 py-2">
+      <a class="relative flex flex-col items-center justify-center py-1 px-3 rounded-xl transition-all duration-200 min-w-[60px] text-cyan-400 font-semibold" href="#">
+        <span class="absolute -top-1 w-6 h-1 rounded-full bg-cyan-400 shadow-[0_0_8px_#00F5FF]"></span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        <span class="text-[10px] font-mono tracking-tight mt-1">Home</span>
+      </a>
+      <a class="relative flex flex-col items-center justify-center py-1 px-3 rounded-xl transition-all duration-200 min-w-[60px] text-slate-400 hover:text-slate-200" href="#services-detail">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg>
+        <span class="text-[10px] font-mono tracking-tight mt-1">Services</span>
+      </a>
+      <a class="relative flex flex-col items-center justify-center py-1 px-3 rounded-xl transition-all duration-200 min-w-[60px] text-slate-400 hover:text-slate-200" href="#rates">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+        <span class="text-[10px] font-mono tracking-tight mt-1">Rates</span>
+      </a>
+      <a class="relative flex flex-col items-center justify-center py-1 px-3 rounded-xl transition-all duration-200 min-w-[60px] text-slate-400 hover:text-slate-200" href="#coverage">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+        <span class="text-[10px] font-mono tracking-tight mt-1">Coverage</span>
+      </a>
+      <button onclick="toggleMobileMenu()" class="relative flex flex-col items-center justify-center py-1 px-3 rounded-xl transition-all duration-200 min-w-[60px] text-slate-400 hover:text-slate-200">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/><path d="M15 3v18"/></svg>
+        <span class="text-[10px] font-mono tracking-tight mt-1">Menu</span>
+      </button>
+    </div>
+  </nav>
+
+</div>
+
+<!-- ============================================================ MODALS ============================================================ -->
+
+<!-- 1. Request Quote Modal -->
+<div id="quote-modal" class="modal-backdrop">
+  <div class="relative w-full max-w-lg rounded-2xl bg-[#0d1527] border border-cyan-500/40 p-6 sm:p-8 shadow-2xl backdrop-blur-2xl">
+    <button onclick="closeQuoteModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-lg">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
+    </button>
+    <div class="mb-5">
+      <span class="text-[10px] font-mono uppercase tracking-wider text-cyan-400 font-bold">Wholesale Onboarding</span>
+      <h3 class="text-xl font-bold text-white mt-1">Request Wholesale Rates &amp; Test Trunk</h3>
+      <p class="text-xs text-slate-400 mt-1">Get custom A-Z rate sheets, CLI routes, and interconnect IP credentials.</p>
+    </div>
+    <form onsubmit="handleQuoteSubmit(event)" class="space-y-4">
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="text-xs font-semibold text-slate-300 font-mono block mb-1">Company Name</label>
+          <input required type="text" class="h-10 w-full rounded-xl border border-slate-800 bg-slate-900/90 px-3 text-xs text-white focus:outline-none focus:ring-2 focus:ring-cyan-400" placeholder="Carrier Co."/>
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-slate-300 font-mono block mb-1">Work Email</label>
+          <input required type="email" class="h-10 w-full rounded-xl border border-slate-800 bg-slate-900/90 px-3 text-xs text-white focus:outline-none focus:ring-2 focus:ring-cyan-400" placeholder="noc@carrier.com"/>
+        </div>
+      </div>
+      <div>
+        <label class="text-xs font-semibold text-slate-300 font-mono block mb-1">Target Destinations / Corridors</label>
+        <input required type="text" class="h-10 w-full rounded-xl border border-slate-800 bg-slate-900/90 px-3 text-xs text-white focus:outline-none focus:ring-2 focus:ring-cyan-400" placeholder="e.g. UK (+44), USA (+1), Germany (+49), Nigeria (+234)"/>
+      </div>
+      <div>
+        <label class="text-xs font-semibold text-slate-300 font-mono block mb-1">Expected Monthly Volume</label>
+        <select class="h-10 w-full rounded-xl border border-slate-800 bg-slate-900/90 px-3 text-xs text-white focus:outline-none focus:ring-2 focus:ring-cyan-400">
+          <option>100K - 1M minutes/month</option>
+          <option>1M - 10M minutes/month</option>
+          <option>10M - 50M minutes/month</option>
+          <option>50M+ minutes/month (Tier-1)</option>
+        </select>
+      </div>
+      <div>
+        <label class="text-xs font-semibold text-slate-300 font-mono block mb-1">Interconnect SBC Hub Preference</label>
+        <select class="h-10 w-full rounded-xl border border-slate-800 bg-slate-900/90 px-3 text-xs text-white focus:outline-none focus:ring-2 focus:ring-cyan-400">
+          <option>Equinix FRA1 (Frankfurt)</option>
+          <option>Equinix NY4 (New York)</option>
+          <option>Equinix SG1 (Singapore)</option>
+          <option>Telehouse LD4 (London)</option>
+        </select>
+      </div>
+      <button type="submit" class="btn-gradient w-full py-3 text-sm mt-2">Submit Wholesale Application</button>
+      <div id="quote-modal-success" class="hidden p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono text-center">
+        ✓ Application received. RouteSphere NOC team will issue rate cards and test credentials within 1 hour.
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- 2. Bilateral Peering Modal -->
+<div id="partner-modal" class="modal-backdrop">
+  <div class="relative w-full max-w-lg rounded-2xl bg-[#0d1527] border border-emerald-500/40 p-6 sm:p-8 shadow-2xl backdrop-blur-2xl">
+    <button onclick="closePartnerModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-lg">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
+    </button>
+    <div class="mb-5">
+      <span class="text-[10px] font-mono uppercase tracking-wider text-emerald-400 font-bold">Carrier Bilateral Swaps</span>
+      <h3 class="text-xl font-bold text-white mt-1">Apply for Bilateral Peering Cross-Connect</h3>
+      <p class="text-xs text-slate-400 mt-1">Direct bilateral IP peering and bilateral volume commitments for Tier-1/Tier-2 operators.</p>
+    </div>
+    <form onsubmit="handlePartnerSubmit(event)" class="space-y-4">
+      <div>
+        <label class="text-xs font-semibold text-slate-300 font-mono block mb-1">Carrier Network Name</label>
+        <input required type="text" class="h-10 w-full rounded-xl border border-slate-800 bg-slate-900/90 px-3 text-xs text-white focus:outline-none focus:ring-2 focus:ring-emerald-400" placeholder="Telecom PTT / Operator"/>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="text-xs font-semibold text-slate-300 font-mono block mb-1">Carrier ASN</label>
+          <input type="text" class="h-10 w-full rounded-xl border border-slate-800 bg-slate-900/90 px-3 text-xs text-white focus:outline-none focus:ring-2 focus:ring-emerald-400" placeholder="AS12345"/>
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-slate-300 font-mono block mb-1">Settlement Cycle</label>
+          <select class="h-10 w-full rounded-xl border border-slate-800 bg-slate-900/90 px-3 text-xs text-white focus:outline-none focus:ring-2 focus:ring-emerald-400">
+            <option>Net-7 (Bi-Weekly)</option>
+            <option>Net-15</option>
+            <option>Prepaid Swap</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label class="text-xs font-semibold text-slate-300 font-mono block mb-1">Direct Routes Offered by Your Network</label>
+        <input required type="text" class="h-10 w-full rounded-xl border border-slate-800 bg-slate-900/90 px-3 text-xs text-white focus:outline-none focus:ring-2 focus:ring-emerald-400" placeholder="e.g. In-Country PTT CLI termination in Brazil, South Africa"/>
+      </div>
+      <button type="submit" class="w-full py-3 text-sm font-semibold rounded-lg bg-gradient-to-r from-emerald-500 to-teal-600 text-slate-950 hover:from-emerald-400 hover:to-teal-500 transition-all font-mono">Submit Bilateral Agreement Request</button>
+      <div id="partner-modal-success" class="hidden p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono text-center">
+        ✓ Bilateral peering request submitted. Our carrier bilateral desk will contact your interconnect team.
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- 3. Portal Login Modal -->
+<div id="login-modal" class="modal-backdrop">
+  <div class="relative w-full max-w-md rounded-2xl bg-[#0d1527] border border-cyan-500/30 p-6 sm:p-8 shadow-2xl backdrop-blur-2xl">
+    <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-lg">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
+    </button>
+    <div class="mb-5 text-center">
+      <div class="w-12 h-12 rounded-xl bg-slate-900 border border-slate-800 mx-auto flex items-center justify-center mb-3">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+      </div>
+      <h3 class="text-xl font-bold text-white">RouteSphere Switch Portal</h3>
+      <p class="text-xs text-slate-400 mt-1">Sign in with your Softswitch credentials or Customer Account</p>
+    </div>
+    <form onsubmit="handleLoginSubmit(event)" class="space-y-4">
+      <div>
+        <label class="text-xs font-semibold text-slate-300 font-mono block mb-1">SIP Username or Email</label>
+        <input required type="text" class="h-10 w-full rounded-xl border border-slate-800 bg-slate-900/90 px-3 text-xs text-white focus:outline-none focus:ring-2 focus:ring-cyan-400" placeholder="admin@carrier.com"/>
+      </div>
+      <div>
+        <label class="text-xs font-semibold text-slate-300 font-mono block mb-1">Secret Key / Password</label>
+        <input required type="password" class="h-10 w-full rounded-xl border border-slate-800 bg-slate-900/90 px-3 text-xs text-white focus:outline-none focus:ring-2 focus:ring-cyan-400" placeholder="••••••••••••"/>
+      </div>
+      <div class="flex items-center justify-between text-[11px] text-slate-400">
+        <label class="flex items-center gap-1.5"><input type="checkbox" class="rounded bg-slate-900 border-slate-700 text-cyan-400"/> Remember session</label>
+        <a href="#faq" class="text-cyan-400 hover:underline">Forgot password?</a>
+      </div>
+      <button type="submit" class="btn-gradient w-full py-2.5 text-xs font-mono">Authenticate to SBC Node</button>
+      <div id="login-modal-msg" class="hidden p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-mono text-center">
+        Connecting to Equinix FRA1 Node... Authenticated successfully.
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ============================================================ SCRIPT ============================================================ -->
+<script>
+// ---- Header Scroll Glow ----
+window.addEventListener('scroll', () => {
+  const header = document.getElementById('site-header');
+  const glow = document.getElementById('header-glow');
+  if (window.scrollY > 25) {
+    header.classList.add('header-scrolled');
+    glow.style.opacity = '1';
+  } else {
+    header.classList.remove('header-scrolled');
+    glow.style.opacity = '0';
+  }
+});
+
+// ---- Dropdown & Mobile Menu ----
+function toggleDropdown() {
+  document.getElementById('services-dropdown').classList.toggle('open');
+}
+function closeDropdown() {
+  document.getElementById('services-dropdown').classList.remove('open');
+}
+document.addEventListener('click', e => {
+  const group = document.getElementById('services-nav-group');
+  if (group && !group.contains(e.target)) closeDropdown();
+});
+function toggleMobileMenu() {
+  document.getElementById('mobile-menu').classList.toggle('hidden');
+}
+
+// ---- Modals ----
+function openQuoteModal() {
+  document.getElementById('quote-modal').classList.add('active');
+}
+function closeQuoteModal() {
+  document.getElementById('quote-modal').classList.remove('active');
+}
+function openPartnerModal() {
+  document.getElementById('partner-modal').classList.add('active');
+}
+function closePartnerModal() {
+  document.getElementById('partner-modal').classList.remove('active');
+}
+function openLoginModal() {
+  document.getElementById('login-modal').classList.add('active');
+}
+function closeLoginModal() {
+  document.getElementById('login-modal').classList.remove('active');
+}
+// Close modals on clicking backdrop
+window.addEventListener('click', e => {
+  ['quote-modal', 'partner-modal', 'login-modal'].forEach(id => {
+    const m = document.getElementById(id);
+    if (e.target === m) m.classList.remove('active');
+  });
+});
+
+function handleQuoteSubmit(e) {
+  e.preventDefault();
+  const msg = document.getElementById('quote-modal-success');
+  msg.classList.remove('hidden');
+  setTimeout(() => { closeQuoteModal(); msg.classList.add('hidden'); }, 2200);
+}
+function handlePartnerSubmit(e) {
+  e.preventDefault();
+  const msg = document.getElementById('partner-modal-success');
+  msg.classList.remove('hidden');
+  setTimeout(() => { closePartnerModal(); msg.classList.add('hidden'); }, 2200);
+}
+function handleLoginSubmit(e) {
+  e.preventDefault();
+  const msg = document.getElementById('login-modal-msg');
+  msg.classList.remove('hidden');
+  setTimeout(() => { closeLoginModal(); msg.classList.add('hidden'); }, 1800);
+}
+
+// ---- Hero Canvas Background animation ----
+(function() {
+  const canvas = document.getElementById('hero-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let w, h, particles = [];
+
+  function resize() {
+    w = canvas.width = canvas.parentElement.offsetWidth;
+    h = canvas.height = canvas.parentElement.offsetHeight;
+  }
+  function init() {
+    resize();
+    particles = Array.from({length: 65}, () => ({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      vx: (Math.random() - 0.5) * 0.35,
+      vy: (Math.random() - 0.5) * 0.35,
+      r: Math.random() * 1.6 + 0.6,
+      color: Math.random() > 0.6 ? '#06b6d4' : Math.random() > 0.4 ? '#a855f7' : '#38bdf8'
+    }));
+  }
+  function loop() {
+    ctx.clearRect(0, 0, w, h);
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 110) {
+          ctx.strokeStyle = `rgba(6,182,212,${0.14 * (1 - dist / 110)})`;
+          ctx.lineWidth = 0.5;
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.stroke();
+        }
+      }
+    }
+    particles.forEach(p => {
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fill();
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < 0 || p.x > w) p.vx *= -1;
+      if (p.y < 0 || p.y > h) p.vy *= -1;
+    });
+    requestAnimationFrame(loop);
+  }
+  init();
+  loop();
+  window.addEventListener('resize', init);
+})();
+
+// ---- PoP Nodes Data (exact from Next.js server payload) ----
+const popNodes = [
+  { popId: 'fra1', name: 'Frankfurt (FRA1)', buttonLabel: 'Frankfurt', region: 'Europe Core', x: 51, y: 32, asr: '59.4%', pdd: '0.8s', latency: '6ms' },
+  { popId: 'ld4', name: 'London (LD4)', buttonLabel: 'London', region: 'UK Telehouse', x: 47, y: 28, asr: '58.1%', pdd: '0.9s', latency: '9ms' },
+  { popId: 'ny4', name: 'New York (NY4)', buttonLabel: 'New York', region: 'North America East', x: 28, y: 36, asr: '62.4%', pdd: '0.7s', latency: '12ms' },
+  { popId: 'sg1', name: 'Singapore (SG1)', buttonLabel: 'Singapore', region: 'Asia-Pacific Hub', x: 78, y: 58, asr: '64.0%', pdd: '1.1s', latency: '18ms' },
+  { popId: 'ty2', name: 'Tokyo (TY2)', buttonLabel: 'Tokyo', region: 'East Asia', x: 86, y: 38, asr: '61.2%', pdd: '1.0s', latency: '22ms' },
+  { popId: 'dxb', name: 'Dubai (DXB1)', buttonLabel: 'Dubai', region: 'Middle East', x: 63, y: 44, asr: '54.8%', pdd: '1.3s', latency: '28ms' },
+  { popId: 'sp1', name: 'São Paulo (SP4)', buttonLabel: 'São Paulo', region: 'Latin America', x: 36, y: 72, asr: '52.3%', pdd: '1.4s', latency: '38ms' },
+  { popId: 'jnb', name: 'Johannesburg (JNB)', buttonLabel: 'Johannesburg', region: 'Sub-Saharan Africa', x: 55, y: 76, asr: '48.9%', pdd: '1.6s', latency: '46ms' },
+  { popId: 'syd', name: 'Sydney (SYD1)', buttonLabel: 'Sydney', region: 'Oceania', x: 90, y: 78, asr: '59.8%', pdd: '1.2s', latency: '32ms' }
+];
+
+let activePoPId = 'fra1';
+
+function renderPoPNodes() {
+  const container = document.getElementById('nodes-container');
+  container.innerHTML = popNodes.map(node => {
+    const isActive = node.popId === activePoPId;
+    return `
+      <button onclick="selectPoP('${node.popId}')" style="left:${node.x}%;top:${node.y}%" class="absolute -translate-x-1/2 -translate-y-1/2 group focus:outline-none z-10" aria-label="Select ${node.name}">
+        <span class="relative flex h-5 w-5 sm:h-6 sm:w-6 items-center justify-center">
+          <span id="ping-${node.popId}" class="${isActive ? 'absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan-400 opacity-75' : 'hidden'}"></span>
+          <span id="dot-${node.popId}" class="relative inline-flex h-3 w-3 sm:h-3.5 sm:w-3.5 rounded-full border-2 transition-transform duration-300 group-hover:scale-125 ${isActive ? 'bg-cyan-400 border-white shadow-[0_0_15px_#00F5FF]' : 'bg-slate-900 border-cyan-400/60 group-hover:border-cyan-300'}"></span>
+        </span>
+        <span class="hidden sm:block absolute left-1/2 -translate-x-1/2 top-7 text-[10px] font-mono font-bold tracking-tight text-slate-300 bg-slate-950/80 px-1.5 py-0.5 rounded border border-slate-800 whitespace-nowrap shadow-lg">${node.buttonLabel}</span>
+      </button>
+    `;
+  }).join('');
+}
+
+function selectPoP(id) {
+  activePoPId = id;
+  const node = popNodes.find(n => n.popId === id);
+  if (!node) return;
+
+  document.getElementById('pop-name').textContent = node.name;
+  document.getElementById('pop-region').textContent = node.region;
+  document.getElementById('pop-asr').textContent = node.asr;
+  document.getElementById('pop-pdd').textContent = node.pdd;
+  document.getElementById('pop-latency').textContent = node.latency;
+  document.getElementById('pop-button-label').textContent = node.buttonLabel;
+
+  renderPoPNodes();
+
+  // Mobile pills update
+  popNodes.forEach(n => {
+    const mbtn = document.getElementById('m-btn-' + n.popId);
+    if (mbtn) {
+      if (n.popId === id) {
+        mbtn.className = 'px-3 py-1.5 rounded-lg text-xs font-mono font-bold whitespace-nowrap transition-all border flex-shrink-0 bg-cyan-500 text-slate-950 border-cyan-400 shadow-md shadow-cyan-500/20';
+      } else {
+        mbtn.className = 'px-3 py-1.5 rounded-lg text-xs font-mono font-bold whitespace-nowrap transition-all border flex-shrink-0 bg-[#0d1527] border-slate-800 text-slate-300 hover:text-white';
+      }
+    }
+  });
+}
+
+// ---- Rate Desk Table (exact 12 routes from source payload) ----
+const rateRows = [
+  { country: 'United Kingdom', code: 'GB', prefix: '+44', buyRate: '0.0031', sellRate: '0.0038', qualityTier: 'CLI Tier 1 Direct', routeType: 'Direct PTT' },
+  { country: 'United States', code: 'US', prefix: '+1', buyRate: '0.0017', sellRate: '0.0022', qualityTier: 'Direct Interconnect', routeType: 'Direct PTT' },
+  { country: 'Germany', code: 'DE', prefix: '+49', buyRate: '0.0052', sellRate: '0.0064', qualityTier: 'Direct Local Loop', routeType: 'Direct PTT' },
+  { country: 'France', code: 'FR', prefix: '+33', buyRate: '0.0059', sellRate: '0.0072', qualityTier: 'Direct PTT CLI', routeType: 'Direct PTT' },
+  { country: 'India', code: 'IN', prefix: '+91', buyRate: '0.0071', sellRate: '0.0085', qualityTier: 'Direct Operator', routeType: 'Direct PTT' },
+  { country: 'Nigeria', code: 'NG', prefix: '+234', buyRate: '0.1280', sellRate: '0.1450', qualityTier: 'Premium Direct CLI', routeType: 'Direct PTT' },
+  { country: 'Pakistan', code: 'PK', prefix: '+92', buyRate: '0.0410', sellRate: '0.0480', qualityTier: 'Direct In-Country', routeType: 'Direct PTT' },
+  { country: 'Philippines', code: 'PH', prefix: '+63', buyRate: '0.0760', sellRate: '0.0890', qualityTier: 'Direct Telco Route', routeType: 'Direct PTT' },
+  { country: 'United Arab Emirates', code: 'AE', prefix: '+971', buyRate: '0.0980', sellRate: '0.1150', qualityTier: 'Direct PTT Tier 1', routeType: 'Direct PTT' },
+  { country: 'Brazil', code: 'BR', prefix: '+55', buyRate: '0.0102', sellRate: '0.0125', qualityTier: 'Direct Anatel CLI', routeType: 'Direct PTT' },
+  { country: 'Australia', code: 'AU', prefix: '+61', buyRate: '0.0080', sellRate: '0.0098', qualityTier: 'Direct Tier 1', routeType: 'Direct PTT' },
+  { country: 'Canada', code: 'CA', prefix: '+1', buyRate: '0.0015', sellRate: '0.0020', qualityTier: 'Direct Interconnect', routeType: 'Direct PTT' }
+];
+
+function renderRatesTable(data) {
+  const tbody = document.getElementById('rate-table-rows');
+  tbody.innerHTML = data.map(r => `
+    <tr class="hover:bg-slate-800/50 transition-colors">
+      <td class="px-4 py-3 font-bold text-white font-sans whitespace-nowrap">${r.country}</td>
+      <td class="px-4 py-3">${r.code}</td>
+      <td class="px-4 py-3 text-cyan-400 font-bold">${r.prefix}</td>
+      <td class="px-4 py-3 text-emerald-400 font-bold">$${r.buyRate}</td>
+      <td class="px-4 py-3 text-cyan-400 font-bold">$${r.sellRate}</td>
+      <td class="px-4 py-3 whitespace-nowrap">
+        <span class="inline-flex items-center gap-1 text-emerald-400">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+          100% Passed
+        </span>
+      </td>
+      <td class="px-4 py-3 font-sans font-semibold whitespace-nowrap">${r.qualityTier}</td>
+      <td class="px-4 py-3 font-sans whitespace-nowrap">
+        <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 text-[11px]">${r.routeType}</span>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function handleRateSearch() {
+  const q = document.getElementById('rates-filter-input').value.toLowerCase();
+  const filtered = rateRows.filter(r =>
+    r.country.toLowerCase().includes(q) ||
+    r.code.toLowerCase().includes(q) ||
+    r.prefix.includes(q) ||
+    r.qualityTier.toLowerCase().includes(q)
+  );
+  renderRatesTable(filtered);
+}
+
+function downloadRatesCSV() {
+  const headers = 'Destination,Country Code,Prefix,Buy Rate / Min,Sell Rate / Min,CLI Guarantee,Quality Tier,Route Type\n';
+  const csvContent = headers + rateRows.map(r => `"${r.country}","${r.code}","${r.prefix}",$${r.buyRate},$${r.sellRate},"100% Passed","${r.qualityTier}","${r.routeType}"`).join('\n');
+  const blob = new Blob([csvContent], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'routesphere-wholesale-rates.csv';
+  a.click();
+}
+
+// ---- Route Probe Quality Simulation ----
+function runProbeSimulation() {
+  const btn = document.getElementById('probe-btn');
+  const prefix = document.getElementById('probe-prefix').value;
+  const telemetry = document.getElementById('probe-telemetry');
+  
+  btn.disabled = true;
+  btn.textContent = 'Transmitting IVR Probe Packets...';
+
+  setTimeout(() => {
+    document.getElementById('res-target').textContent = prefix;
+    document.getElementById('res-asr').textContent = (56 + Math.random() * 12).toFixed(1) + '%';
+    document.getElementById('res-pdd').textContent = (0.7 + Math.random() * 0.4).toFixed(2) + 's';
+    document.getElementById('res-mos').textContent = (4.1 + Math.random() * 0.35).toFixed(2) + ' (P.800 HD)';
+    telemetry.classList.remove('hidden');
+    btn.disabled = false;
+    btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mr-2"><polygon points="6 3 20 12 6 21 6 3"/></svg> Run Route Quality Test';
+  }, 1400);
+}
+
+// ---- FAQ Accordion Toggle ----
+function toggleFaq(num) {
+  for (let i = 1; i <= 5; i++) {
+    const ans = document.getElementById('faq-ans-' + i);
+    const icon = document.getElementById('faq-icon-' + i);
+    if (i === num) {
+      const isClosed = ans.classList.contains('hidden');
+      if (isClosed) {
+        ans.classList.remove('hidden');
+        icon.classList.add('rotate-180', 'text-cyan-400');
+        icon.classList.remove('text-slate-400');
+      } else {
+        ans.classList.add('hidden');
+        icon.classList.remove('rotate-180', 'text-cyan-400');
+        icon.classList.add('text-slate-400');
+      }
+    }
+  }
+}
+
+// ---- Initialize Page ----
+renderPoPNodes();
+renderRatesTable(rateRows);
+</script>
+
+</body>
+</html>
